@@ -1,0 +1,32 @@
+<html>
+
+<head>
+	<script>
+	function addVoteOptions(){
+	　	　  insTable(document.getElementById("addVoteTable"),"<tr><td><table><tr><td><input type=text id=options name=options size=50/></td></tr><tr><td><input type=text id=options name=options size=50/></td></tr><tr><td><input type=text id=options name=options size=50/></td></tr></table></td></tr>");
+	}
+		
+	function insTable(tb,str){
+	　　var o=document.createElement("div"),ol;
+	　　o.innerHTML=str;
+	　　ol=o.childNodes[0].tBodies[0].rows;
+	　　while(ol.length>0){
+	　　　　tb.tBodies[0].appendChild(ol[0]);
+	　　}
+	}
+</script>
+</head>
+<body>
+	<table id = addVoteTable>
+			
+	</table>
+	
+	<table align=center>
+		<tr><td>&nbsp;</td></tr>
+    	<tr>
+    		<td align=left><a href='javascript:addVoteOptions()'>奐紗仟僉��</a></td>
+    	</tr>
+    </table>
+
+</body>	
+</html>

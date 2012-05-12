@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowViewLayout Version="1.2">
+  <StrutsActivity path="/loginAction.do" location="60,135" dimension="262,84" />
+  <StrutsActivity path="/vote.do" location="405,135" dimension="244,84" />
+  <StrutsActivity path="/index.jsp" location="60,15" dimension="100,48" />
+  <StrutsActivity path="/Login.jsp" location="195,15" dimension="100,48" />
+  <StrutsActivity path="/AddVote.jsp" location="555,15" dimension="112,48" />
+  <StrutsActivity path="/VoteDetail.jsp" location="390,15" dimension="130,48" />
+  <StrutsActivity path="uploadSuccess.jsp" location="950,150" dimension="142,48" />
+  <StrutsActivity path="/uploadSuccess.jsp" />
+  <StrutsTransition id="/loginAction.do,fail,/Login.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="210,135" />
+      <AbsolutePoint location="210,63" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/vote.do,add_vote_affix,uploadSuccess.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="649,177" />
+      <AbsolutePoint location="950,177" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/loginAction.do,success,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="145,135" />
+      <AbsolutePoint location="145,63" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/vote.do,fail,/AddVote.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="527,177" />
+      <AbsolutePoint location="611,39" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/Login.jsp,null,/loginAction.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="245,63" />
+      <AbsolutePoint location="245,135" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/vote.do,add_vote_affix,/uploadSuccess.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="527,177" />
+      <AbsolutePoint location="0,0" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/AddVote.jsp,null,/vote.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="611,63" />
+      <AbsolutePoint location="611,135" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/vote.do,success,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="527,177" />
+      <AbsolutePoint location="110,39" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+</FlowViewLayout>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+  <data-sources />
+  <form-beans >
+    <form-bean name="loginForm" type="com.bysj.struts.form.LoginForm" />
+    <form-bean name="voteForm" type="com.bysj.struts.form.VoteForm" />
+  </form-beans>
+
+  <global-exceptions />
+  <global-forwards />
+  <action-mappings >
+    <action
+      attribute="loginForm"
+      input="/Login.jsp"
+      name="loginForm"
+      parameter="action"
+      path="/loginAction"
+      scope="request"
+      type="com.bysj.struts.action.LoginAction">
+      <forward name="success" path="/index.jsp" />
+      <forward name="fail" path="/Login.jsp" />
+    </action>
+    <action
+      attribute="voteForm"
+      input="/AddVote.jsp"
+      name="voteForm"
+      parameter="action"
+      path="/vote"
+      scope="request"
+      type="com.bysj.struts.action.VoteAction">
+      <forward name="success" path="/index.jsp" />
+      <forward name="fail" path="/AddVote.jsp" />
+      <forward name="add_vote_affix" path="/uploadSuccess.jsp"></forward>
+    </action>
+    
+
+  </action-mappings>
+
+  <message-resources parameter="com.bysj.struts.ApplicationResources" />
+</struts-config>
+
