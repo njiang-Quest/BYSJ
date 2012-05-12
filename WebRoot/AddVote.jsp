@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="gb2312"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -20,6 +20,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 	<link rel="shortcut icon" href="image/gif-0146.gif" type="image/x-icon"/>  
+	
+	<script language=javascript src="js/wpCalendar.js"></script>
+	<style type="text/css">
+		body{
+			margin-right:200px;
+			margin-left:200px;
+		}
+		
+	 .sss{
+		 margin-left:400px; 
+		 margin-top:400px; 
+		 padding-left:40px;
+		 padding-top:40px;
+		 padding-right:40px;
+		 padding-bottom:40px;
+		 border-width:20px;
+	 }
+	</style>
 	<script>
 		function addVoteContext() {
 			if(document.getElementById('voteContext1').style.display=='none') {
@@ -57,22 +75,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 			
 			var beginTime = trim(document.addVoteForm.beginTime.value);
-				if(beginTime==" "){
+			alert(beginTime)
+			if(beginTime==" "){
 					flag = false;
 					message+='New vote have to fill in begin time.\r\n'
 					document.addVoteForm.beginTime.style.borderColor ='red';
 			}
 			
 			if(optionCount < 2) {
-				document.getElementById('least').innerHTML ="<font id=least color=red size=2>(è‡³å°‘å¡«å†™ä¸¤é¡¹)</font>";
+				document.getElementById('least').innerHTML ="<font id=least color=red size=2>(ÖÁÉÙÌîĞ´Á½Ïî)</font>";
 				message+='New vote have to fill in at least two options.\r\n';
 				flag= false;
 			} else {
-				document.getElementById('least').innerHTML ="<font id=least color=gray size=2>(è‡³å°‘å¡«å†™ä¸¤é¡¹)</font>";
+				document.getElementById('least').innerHTML ="<font id=least color=gray size=2>(ÖÁÉÙÌîĞ´Á½Ïî)</font>";
 			}
 			if(!flag)
 				alert(message)
 			return flag;
+			//return false;
 			
 		}
 		
@@ -81,7 +101,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if('title' == type) {
 				var title = trim(document.addVoteForm.title.value);
 				if(title==" "){
-					flag = false;
 					document.addVoteForm.title.style.borderColor ='red';
 				}
 			}
@@ -89,43 +108,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if('beginTime' == type) {
 				var beginTime = trim(document.addVoteForm.beginTime.value);
 				if(beginTime==" "){
-					flag = false;
 					document.addVoteForm.beginTime.style.borderColor ='red';
-				} else {
-					var time = beginTime.split('-');
-					if(3==time.length ){
-						var year =  trim(time[0])
-						var month =  trim(time[1])
-						var day =  trim(time[2])
-						
-						if(year != " " &&ã€€month != " "ã€€&& day != " "){
-						//alert("ddddd")
-							if(year.match("^[1-9]\d*$") && month.match("^[1-9]\d*$") && day.match("^[1-9]\d*$") ){
-								//alert("dwewe")
-								year = parseInt(year)
-								month = parseInt(month)
-								day = parseInt(day)
-							//	alert(day)
-								
-								if( ((0<year<10000) && (0<month<13) && (0<day<31)) ){
-									alert("true")
-								} else {
-									alert("false")
-									flag = false;
-								}
-							}
-						} else {flag = false;}
-					} else {
-						flag = false;
-					}
-					
-					if(!flag){
-						document.addVoteForm.beginTime.style.borderColor ='red';
-						document.getElementById('time').innerHTML ='<font color=red size=2>æ³¨æ„ï¼šæ—¶é—´æ ¼å¼è¦ç¬¦åˆè¦æ±‚ï¼Œä¾‹å¦‚ï¼Œ2012-05-01</font>';
-					}		
 				}
 			}
-			return flag;
 		}
 		
 		function clearStyle(type){
@@ -137,7 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				document.addVoteForm.beginTime.style.borderColor ='';
 				var beginTime = trim(document.addVoteForm.beginTime.value);
 				if(beginTime != " "){
-					document.getElementById('time').innerHTML ='<font color=gray>æ³¨æ„ï¼šæ—¶é—´æ ¼å¼è¦ç¬¦åˆè¦æ±‚ï¼Œä¾‹å¦‚ï¼Œ2012-05-01</font>';
+					document.getElementById('time').innerHTML ='<font color=gray>×¢Òâ£ºÊ±¼ä¸ñÊ½Òª·ûºÏÒªÇó£¬ÀıÈç£¬2012-05-01</font>';
 				}
 			}
 		}
@@ -147,11 +132,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(length > 0) {
 				 while((mystr.indexOf(" ")==0)&&(mystr.length> 1)){
 				 	mystr=mystr.substring(1,mystr.length);
-				 }//å»é™¤å‰é¢ç©ºæ ¼
+				 }//È¥³ıÇ°Ãæ¿Õ¸ñ
 				 
 				 while((mystr.lastIndexOf(" ")==mystr.length-1)&&(mystr.length> 1)){
 				 	mystr=mystr.substring(0,mystr.length-1);
-				 }//å»é™¤åé¢ç©ºæ ¼
+				 }//È¥³ıºóÃæ¿Õ¸ñ
 				 
 				
 			} else {
@@ -166,6 +151,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	     	
 	     }
 
+		function insertrow(){
+			var mytable=document.getElementById("addoptiontable");
+			var myrow=document.getElementById("troption");
+			if(navigator.userAgent.indexOf("Firefox") != - 1)
+			{
+			 	mytable.tBodies[0].appendChild(myrow.cloneNode(true));
+			 	mytable.tBodies[0].appendChild(myrow.cloneNode(true));
+			 	mytable.tBodies[0].appendChild(myrow.cloneNode(true));
+			}else{
+			 	mytable.tBodies[0].insertBefore(myrow.cloneNode(true));
+			 	mytable.tBodies[0].appendChild(myrow.cloneNode(true));
+			 	mytable.tBodies[0].insertBefore(myrow.cloneNode(true));
+			}
+		}	  
+		
 	</script>
 	
   </head>
@@ -176,18 +176,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	</table>
 	  	<p/>
   	<form action="vote.do?action=addVote" method = post name=addVoteForm onsubmit="return voteOptions()">
+     <table  border="2" align=center width=870><tr><td class='sss'>
     	<table id=addVoteTable align=center>
     		<tr>
     			<td>
-    				<font>æ ‡é¢˜ï¼š</font>
+    				<font>±êÌâ£º</font>
     				<input type=text name=title id=title size=52 onfocus = 'clearStyle("title")' onblur ='checkNull("title")'/>
-    				<a href='javascript:addVoteContext()'>æ·»åŠ æè¿°</a>
+    				<a href='javascript:addVoteContext()'>Ìí¼ÓÃèÊö</a>
     			</td>
     		</tr>
     		
     		<tr><td>&nbsp;</td></tr>
     		<tr>
-    			<td><span id=voteContext1 style='display:none'>æŠ•ç¥¨æè¿°ï¼š</span></td>    			
+    			<td><span id=voteContext1 style='display:none'>Í¶Æ±ÃèÊö£º</span></td>    			
     		</tr>
     		<tr>
     			<td><span id=voteContext2 style='display:none'><textarea name=context rows=5 cols=50></textarea></span></td>
@@ -197,42 +198,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		
     		<tr>
     			<td>
-    				æŠ•ç¥¨æœ‰æ•ˆæœŸï¼š
-					å¼€å§‹æ—¶é—´ï¼š<input type=text id=beginTime name=beginTime onfocus = 'clearStyle("beginTime")' onblur ='checkNull("beginTime")'/>
-    				ç»“æŸæ—¶é—´ï¼š<input type=text id=endTime name=endTime/>
+    				¿¼ÆÀÍ¶Æ±ÈÕÆÚ£º						
+					<input type=text id=beginTime name=beginTime onfocus="showCalendar(this)" readonly>  
+    				---&nbsp;<input type=text id=endTime name=endTime onfocus="showCalendar(this)" readonly>  
     			</td>
     		</tr>
-    		<tr><td><span id=time><font color=gray size=2>æ³¨æ„ï¼šæ—¶é—´æ ¼å¼è¦ç¬¦åˆè¦æ±‚ï¼Œä¾‹å¦‚ï¼Œ2012-05-01</font></span></td></tr>
     		
     		<tr><td>&nbsp;</td></tr>
     		
     		<tr>
     			<td>
-    				é€‰é¡¹è®¾ç½®ï¼š 
-    				<input type=radio id=optional name=optional checked value=0>å•é€‰
-    				<input type=radio id=optional name=optional value=1>å¤šé€‰
+    				Ñ¡ÏîÉèÖÃ£º 
+    				<input type=radio id=optional name=optional checked value=0>µ¥Ñ¡
+    				<input type=radio id=optional name=optional value=1>¶àÑ¡
     			</td>
     		</tr>
     		
     		<tr><td>&nbsp;</td></tr>
     		
     		<tr>
-    			<td>æŠ•ç¥¨é€‰é¡¹ï¼š<span id=least><font color=gray size=2>(è‡³å°‘å¡«å†™ä¸¤é¡¹)</font></span></td>
+    			<td>Í¶Æ±Ñ¡Ïî£º<span id=least><font color=gray size=2>(ÖÁÉÙÌîĞ´Á½Ïî)</font></span></td>
     		</tr>
     		
-    	   <jsp:include page="AddVoteOptions.html"></jsp:include>
-    	</table>
-			<p/>
-			<br/>
-		<table align=center>
+    		<tr><td>
+    			<table id = addoptiontable>
+    				<tr><td><input type=text id=options name=options size=50/></td></tr>
+    				<tr><td><input type=text id=options name=options size=50/></td></tr>
+    				<tr id = troption><td><input type=text id=options name=options size=50/></td></tr>
+    			</table>
+    		</td></tr>
+	
+			<tr>
+    			<td align=left><a href='javascript:insertrow()' style='text-decoration:none'><img src='image/gif-0888.gif' width=15 height=15>Ôö¼ÓÑ¡Ïî</a></td>
+    		</tr>
+    		
+			<tr height=20><td>&nbsp;</td></tr>
     		<tr align=left>
     			<td>
     				&nbsp;&nbsp;
-    				<input type=submit value="å‘èµ·æŠ•ç¥¨" />
+    				<input type=submit value="·¢ÆğÍ¶Æ±" />
     				&nbsp;&nbsp;&nbsp;
-    				<input type='reset' value="é‡    ç½®"/>
+    				<input type='reset' value="ÖØ    ÖÃ"/>
     				&nbsp;&nbsp;&nbsp;
-    				<input type=button value="å–    æ¶ˆ" onclick="javescript:window.open('index.jsp','_shif')"/>
+    				<input type=button value="È¡    Ïû" onclick="javescript:window.open('index.jsp','_shif')"/>
     				&nbsp;&nbsp;&nbsp;
     				&nbsp;&nbsp;&nbsp;
     				&nbsp;&nbsp;&nbsp;
@@ -242,7 +250,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				&nbsp;&nbsp;&nbsp;
     			</td>
     		</tr>
-    	</table>
+    	 </table>
+    	</td></tr></table>
       </form>
   </body>
 </html>

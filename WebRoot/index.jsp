@@ -53,6 +53,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	<p/>
 	  	
 	  	<a href='AddVote.jsp'>发起投票</a><p/>
+	  	<a href="appraisal .jsp">设置考评</a><p/>
 	  	
 	  	<a href='javascript:showVotes()'>查看投票</a>
 	  	<form name=votesForm action="vote.do?action=getVotes&visit=1" method=post>
@@ -67,11 +68,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				  		<c:if test="${vote.status==0}">
 				  			[<font color=red>${vote.strStatus}</font>]
 				  		</c:if>
-				  		<br/>
+				  		<br/><br/>
 				  	</logic:iterate>
 			  	</logic:notEmpty>
 		  	</div>
 	  	</form>
 	  	<p/>
+	  	
+	  	
   </body>
 </html>
