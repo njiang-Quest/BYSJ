@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 			
 			var beginTime = trim(document.addVoteForm.beginTime.value);
-			alert(beginTime)
+			//alert(beginTime)
 			if(beginTime==" "){
 					flag = false;
 					message+='New vote have to fill in begin time.\r\n'
@@ -240,7 +240,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				&nbsp;&nbsp;&nbsp;
     				<input type='reset' value="重    置"/>
     				&nbsp;&nbsp;&nbsp;
-    				<input type=button value="取    消" onclick="javescript:window.open('index.jsp','_shif')"/>
+    				<input type=button value="取    消" onclick="javescript:window.history.back()"/>
     				&nbsp;&nbsp;&nbsp;
     				&nbsp;&nbsp;&nbsp;
     				&nbsp;&nbsp;&nbsp;

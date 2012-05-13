@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				<td><img src="image/blue.jpg" width="${3+currVote.voteDetail[id].cont*10}" height=14>${currVote.voteDetail[id].percentage}%
     					<logic:iterate id="affix" name="affixs" indexId="id">
 		 				<c:if test="${affix.value != 'none' && affix.key==option}">
-		 					<a href="do_download.jsp?affix=${affix.value }"><img src="image/gif-0160.gif" width=15 heright=15> </a>
+		 					<a href="do_download.jsp?affix=${affix.value }"><img src="image/gif-0160.gif" width=15 height=15> </a>
 		 				</c:if>
     					</logic:iterate>
     				</td>

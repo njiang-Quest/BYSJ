@@ -29,13 +29,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 		
 		.sss{
-		 margin-left:400px; 
-		 margin-top:400px; 
-		 padding-left:40px;
-		 padding-top:40px;
-		 padding-right:40px;
-		 padding-bottom:40px;
-		 border-width:20px;
+			 margin-left:200px; 
+			 margin-top:400px; 
+			 padding-left:30px;
+			 padding-top:40px;
+			 padding-right:30px;
+			 padding-bottom:40px;
+			 border-width:20px;
+	    }
 	</style>
 	
 	<script type="text/javascript">
@@ -67,17 +68,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		}	  	
 		
+		function mycheck(){
+			var checkbox = document.getElementById('allowAffix');
+			//alert(checkbox.checked)
+			if(checkbox.checked) {
+				checkbox.value='1';
+			}
+			else{
+				checkbox.value='0';
+			}
+			//alert(checkbox.value);
+			
+			var escore = document.getElementsByName("escore");
+			var tscore = document.getElementsByName("tscore");
+			var e='';
+			var t='';
+			for(i=0;i<escore.length;i++){
+				if(i!=escore.length-1){
+					e=e+escore[i].value+'-';
+					t=t+tscore[i].value+'-';
+				}
+				else {
+					e=e+escore[i].value;
+					t=t+tscore[i].value;
+				}
+			}
+			alert(e);
+			alert(t);
+			
+			document.getElementById("e").value=e;
+			document.getElementById("t").value=t;
+			
+			alert(document.getElementById("e").value);
+			//return false;
+		}
+		
   </script>
 	
   </head>
   
-  <body leftmargin=200 rightmargin=200>
-	  	<table width=100% background='image/lightblue.jpg'>
+  <body>
+	  	<table width=100% height=50 background='image/lightblue.jpg'>
 	  		  <tr><td align = right> Welcome ${currUser.name }(${currUser.id})&nbsp;&nbsp;<a href='Login.jsp'>sign out</a>&nbsp;&nbsp;</td></tr>
 	  	</table>
 	  	<p/>
 	  	
-   	<form method = post>
+   	<form method = post action='appraisal.do?action=addAppraisal' onsubmit="return mycheck()">
+   	  <input type=hidden id='e' name='e'/><input type=hidden id='t' name='t'/>
+   	
    	  <table  border="2" align=center width=860><tr><td class='sss'>
    		<table id=addApprisalTable align=center>
    			<tr>
@@ -90,9 +128,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		
     		<tr>
     			<td>考评类型:
-    				<select name=appType>
-    					<option value=0>人员考评</option>
-    					<option value=1>部门考评</option>
+    				<select name=type>
+    					<option value='个人考评'>个人考评</option>
+    					<option value='部门考评'>部门考评</option>
     				</select>
     			</td>
     		</tr>
@@ -100,10 +138,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		
     		<tr>
     			<td>
-    				<input type=checkbox name=allowAffix/>可上传工作报告&nbsp;&nbsp;
+    				<input type=checkbox name='allowAffix' id='allowAffix'/>可上传工作报告&nbsp;&nbsp;
     				文档上传日期：						
-					<input type=text id=fbeginTime name=fbeginTime onfocus="showCalendar(this)" readonly>  
-    				---&nbsp;<input type=text id=fendTime name=fendTime onfocus="showCalendar(this)" readonly>  
+					<input type=text id=abeginTime name=abeginTime onfocus="showCalendar(this)" readonly>  
+    				---&nbsp;<input type=text id=aendTime name=aendTime onfocus="showCalendar(this)" readonly>  
     			</td>
     		</tr>
     		<tr><td>&nbsp;</td></tr>
@@ -133,21 +171,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tbody>
 					<tr>
 						<td width=68%>考评项</td>
-						<td>&nbsp;&nbsp;分值</td>
+						<td>&nbsp;&nbsp;分值形式</td>
 						<td>&nbsp;&nbsp;最大分</td>
 					</tr>	
 					<tr>
 						<td><input type=text id=options name=options size=40/></td>
 						<td>&nbsp;
 							<select name=escore>
-	    						<option value=1 selected>1&nbsp;&nbsp;</option>
-	    						<option value=2>2</option>
-	    						<option value=3>3</option>
-	    						<option value=5>5</option>
+	    						<option value='0,1,2,3'>0,1,2,3</option>
+	    						<option value='0,4,5,6'>3,4,5,6</option>
+	    						<option value='0,1,2,3,4,5,6,7,8,9,10' selected>0~10&nbsp;&nbsp;</option>
 	    					</select>
 	    				</td>
 						<td>&nbsp;
-							<select name=ascore>
+							<select name=tscore>
 	    						<option value=10 selected>10&nbsp;&nbsp;</option>
 	    						<option value=15>15</option>
 	    						<option value=20>20</option>
@@ -159,14 +196,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td><input type=text id=options name=options size=40/></td>
 						<td>&nbsp;
 							<select name=escore>
-	    						<option value=1 selected>1&nbsp;&nbsp;</option>
-	    						<option value=2>2</option>
-	    						<option value=3>3</option>
-	    						<option value=5>5</option>
+	    						<option value='0,1,2,3'>0,1,2,3</option>
+	    						<option value='0,4,5,6'>3,4,5,6</option>
+	    						<option value='0,1,2,3,4,5,6,7,8,9,10' selected>0~10&nbsp;&nbsp;</option>
 	    					</select>
 	    				</td>
 						<td>&nbsp;
-							<select name=ascore>
+							<select name=tscore>
 	    						<option value=10 selected>10&nbsp;&nbsp;</option>
 	    						<option value=15>15</option>
 	    						<option value=20>20</option>
@@ -178,14 +214,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td><input type=text id=options name=options size=40/></td>
 						<td>&nbsp;
 							<select name=escore>
-	    						<option value=1 selected>1&nbsp;&nbsp;</option>
-	    						<option value=2>2</option>
-	    						<option value=3>3</option>
-	    						<option value=5>5</option>
+	    						<option value='0,1,2,3'>0,1,2,3</option>
+	    						<option value='0,4,5,6'>3,4,5,6</option>
+	    						<option value='0,1,2,3,4,5,6,7,8,9,10' selected>0~10&nbsp;&nbsp;</option>
 	    					</select>
 	    				</td>
 						<td>&nbsp;
-							<select name=ascore>
+						
+							<select name=tscore>
 	    						<option value=10 selected>10&nbsp;&nbsp;</option>
 	    						<option value=15>15</option>
 	    						<option value=20>20</option>
@@ -220,10 +256,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		</tr>
     		<tr><td>&nbsp;</td></tr>
     		
-    		<tr><td>参与人:<input type=checkbox value=0 name=can>所有人</td></tr>
+    		<tr><td>参与人:<input type=checkbox value=0 name=canping>所有人</td></tr>
     		<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    			<input type=checkbox value=1 name=can checked/>被考评对象的部门
+    			<input type=checkbox value=1 name=canping checked/>被考评对象的部门
     		</td></tr>
+    		<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    			<input type=checkbox value=2 name=canping />特殊
+    		</td></tr>
+    		<tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>
+    		<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    			<input type=submit value='提交' />
+    			<input type=reset value='取消' />
+    			<input type=button value='返回' onclick="javascript:window.history.back()"/>
+    		</td></tr>
+    		
    		</table>
    	  </td></tr></table>
    	</form>

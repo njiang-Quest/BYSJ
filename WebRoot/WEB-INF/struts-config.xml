@@ -6,6 +6,7 @@
   <form-beans >
     <form-bean name="loginForm" type="com.bysj.struts.form.LoginForm" />
     <form-bean name="voteForm" type="com.bysj.struts.form.VoteForm" />
+    <form-bean name="appraisalForm" type="com.bysj.struts.form.AppraisalForm" />
   </form-beans>
 
   <global-exceptions />
@@ -34,6 +35,19 @@
       <forward name="fail" path="/AddVote.jsp" />
       <forward name="add_vote_affix" path="/uploadSuccess.jsp"></forward>
     </action>
+    <action
+      attribute="appraisalForm"
+      input="/appraisal.jsp"
+      name="appraisalForm"
+      parameter="action"
+      path="/appraisal"
+      scope="request"
+      type="com.bysj.struts.action.AppraisalAction">
+      <forward name="success" path="/index.jsp" />
+      <forward name="fail" path="/appraisal.jsp" />
+      <forward name="do_app" path="/do_appraisal.jsp"></forward>
+    </action>
+    
     
 
   </action-mappings>

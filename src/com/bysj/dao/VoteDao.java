@@ -34,7 +34,7 @@ public class VoteDao {
 		conn = ConnectionUtil.getConnection();
 		int ok = 0;
 		try {
-			ps = conn.prepareStatement(SQLStatement.ADD_VOTE);
+			ps = conn.prepareStatement(VoteSQLStatement.ADD_VOTE);
 			ps.setString(1, vote.getBeginTime());
 			if(vote.getEndTime()!=null)
 				ps.setString(2, vote.getEndTime());
@@ -68,7 +68,7 @@ public class VoteDao {
 		List<VoteBean> voteList = new ArrayList<VoteBean>();
 		try {
 			state = conn.createStatement();
-			rs = state.executeQuery(SQLStatement.VOTES);
+			rs = state.executeQuery(VoteSQLStatement.VOTES);
 			while(rs.next()){
 				VoteBean vote = new VoteBean();
 				vote.setVoteId(rs.getInt(1));
@@ -105,7 +105,7 @@ public class VoteDao {
 		
 		VoteBean vote = null;		
 		try {
-			ps = conn.prepareStatement(SQLStatement.CURRENT_VOTE);
+			ps = conn.prepareStatement(VoteSQLStatement.CURRENT_VOTE);
 			ps.setInt(1, voteId);
 			rs = ps.executeQuery();
 			if(rs.next()){
@@ -145,7 +145,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 //		 Map<String,String> affixs = new HashMap<String,String>();
 		 try {
-			ps = conn.prepareStatement(SQLStatement.GETALLPATH);
+			ps = conn.prepareStatement(VoteSQLStatement.GETALLPATH);
 			ps.setInt(1, voteid);
 			ps.setString(2, option);
 			rs = ps.executeQuery();
@@ -173,7 +173,7 @@ public class VoteDao {
 		VoteDetailBean voteDetail = null;
 		conn = ConnectionUtil.getConnection();
 		try {
-			ps = conn.prepareStatement(SQLStatement.VOTE_DETAIL);
+			ps = conn.prepareStatement(VoteSQLStatement.VOTE_DETAIL);
 			ps.setInt(1, voteId);
 			ps.setString(2, username);
 			rs = ps.executeQuery();
@@ -209,7 +209,7 @@ public class VoteDao {
 		conn = ConnectionUtil.getConnection();
 		int total_count = 0;
 		try {
-			ps = conn.prepareStatement(SQLStatement.TOTAL_COUNT);
+			ps = conn.prepareStatement(VoteSQLStatement.TOTAL_COUNT);
 			ps.setInt(1, voteId);
 			rs = ps.executeQuery();
 			if(rs.next())
@@ -251,7 +251,7 @@ public class VoteDao {
 		
 		int ok = 0;
 		try {
-			ps = conn.prepareStatement(SQLStatement.DO_VOTE);
+			ps = conn.prepareStatement(VoteSQLStatement.DO_VOTE);
 			ps.setInt(1, voteId);
 			ps.setString(2, option);
 			ps.setString(3, String.valueOf(userid));
@@ -276,7 +276,7 @@ public class VoteDao {
 		conn = ConnectionUtil.getConnection();
 		int count = 0;
 		try {
-			ps = conn.prepareStatement(SQLStatement.OPTION_COUNT);
+			ps = conn.prepareStatement(VoteSQLStatement.OPTION_COUNT);
 			ps.setInt(1, voteId);
 			ps.setString(2, option);
 			rs = ps.executeQuery();
@@ -301,7 +301,7 @@ public class VoteDao {
 		
 		conn = ConnectionUtil.getConnection();
 		try {
-			ps = conn.prepareStatement(SQLStatement.UPDATE_DETAIL_COUNT);
+			ps = conn.prepareStatement(VoteSQLStatement.UPDATE_DETAIL_COUNT);
 			ps.setInt(1, detail_count+1);
 			ps.setString(2, toupiaoren+","+userid);
 			ps.setInt(3, voteId);
@@ -351,7 +351,7 @@ public class VoteDao {
 			
 			boolean ok = false;
 			try {
-				ps = conn.prepareStatement(SQLStatement.ISFIRST);
+				ps = conn.prepareStatement(VoteSQLStatement.ISFIRST);
 				ps.setInt(1, voteId);
 				ps.setString(2, option);
 				
@@ -373,7 +373,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 		 boolean ok = false;
 		 try {
-			ps = conn.prepareStatement(SQLStatement.ALREADY_VOTE);
+			ps = conn.prepareStatement(VoteSQLStatement.ALREADY_VOTE);
 			ps.setInt(1, voteId);
 			rs = ps.executeQuery();
 			while(rs.next()){
@@ -396,7 +396,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 		 String toupiaoren = "";
 		 try {
-			ps = conn.prepareStatement(SQLStatement.TOUPIAOREN);
+			ps = conn.prepareStatement(VoteSQLStatement.TOUPIAOREN);
 			ps.setInt(1, voteId);
 			ps.setString(2, option);
 			rs = ps.executeQuery();
@@ -429,7 +429,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 		 int count = 0;
 		 try {
-			ps = conn.prepareStatement(SQLStatement.ADD_AFFIX);
+			ps = conn.prepareStatement(VoteSQLStatement.ADD_AFFIX);
 			ps.setInt(1, affix.getVoteid());
 			ps.setString(2, affix.getPathName());
 			ps.setString(3, affix.getAoption());
@@ -451,7 +451,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 		 int count = 0;
 		 try {
-			ps = conn.prepareStatement(SQLStatement.NOTFIRSTTIME);
+			ps = conn.prepareStatement(VoteSQLStatement.NOTFIRSTTIME);
 			ps.setString(1, path+affix.getPathName());
 			ps.setInt(2, affix.getVoteid());
 			ps.setString(3, affix.getAoption());
@@ -472,7 +472,7 @@ public class VoteDao {
 	 public boolean is_first_time_affix(String username,int voteid){
 		 conn = ConnectionUtil.getConnection();
 		 try {
-			ps = conn.prepareStatement(SQLStatement.ISFIRSF_AFFIX);
+			ps = conn.prepareStatement(VoteSQLStatement.ISFIRSF_AFFIX);
 			ps.setInt(1, voteid);
 			ps.setString(2, username);
 			rs = ps.executeQuery();
@@ -493,7 +493,7 @@ public class VoteDao {
 		 conn = ConnectionUtil.getConnection();
 		 String path = "";
 		 try {
-			ps = conn.prepareStatement(SQLStatement.GETPATH);
+			ps = conn.prepareStatement(VoteSQLStatement.GETPATH);
 			ps.setInt(1, affix.getVoteid());
 			ps.setString(2, affix.getAoption());
 			rs = ps.executeQuery();

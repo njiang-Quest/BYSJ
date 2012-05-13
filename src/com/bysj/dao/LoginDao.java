@@ -18,7 +18,7 @@ public class LoginDao {
 		conn = ConnectionUtil.getConnection();
 		
 		try {
-			ps = conn.prepareStatement(SQLStatement.LOGIN);
+			ps = conn.prepareStatement(VoteSQLStatement.LOGIN);
 			ps.setString(1, user.getName());
 			ps.setString(2, user.getPwd());
 			
