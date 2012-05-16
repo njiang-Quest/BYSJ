@@ -74,18 +74,25 @@ public class VoteAction extends DispatchAction {
 		
 //		System.out.println("title:"+vote.getTitle());
 //		System.out.println("context:"+vote.getContext());
+		HttpSession session = request.getSession();
+
 		VoteDao voteDao = new VoteDao();
 		if(voteDao.addVote(vote)){
 			vote.setStatus(1);
-			HttpSession session = request.getSession();
 			session.setAttribute("currVote", vote);
-			return mapping.findForward("success");
+//			return mapping.findForward("success");
+			session.setAttribute("url", "viewVotes.jsp");
+			return mapping.findForward("go");
 		}
-		return mapping.findForward("fail");
+		else {
+			session.setAttribute("url", "AddVote.jsp");
+			return mapping.findForward("go");
+		}
 	}
 	
 	public ActionForward getVotes(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
 		VoteDao voteDao = new VoteDao();
 		List<VoteBean> votes = voteDao.getVotes();
 		if(!votes.isEmpty()) {
@@ -96,7 +103,6 @@ public class VoteAction extends DispatchAction {
 				else
 					vote.setStrStatus("½øÐÐÖÐ");
 			}
-			HttpSession session = request.getSession();
 			session.setAttribute("votes", votes);
 			
 			
@@ -104,20 +110,24 @@ public class VoteAction extends DispatchAction {
 				session.setAttribute("showDiv", "1");
 //			else 
 //				session.setAttribute("showDiv", "0");
-//			
-			try {
-				response.sendRedirect("index.jsp");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			
+//			try {
+//				response.sendRedirect("index.jsp");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+				
+			session.setAttribute("url", "index.jsp");
+			return mapping.findForward("go");
 		} else {
-			try {
-				response.sendRedirect("index.jsp");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				response.sendRedirect("index.jsp");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			session.setAttribute("url", "index.jsp");
+			return mapping.findForward("go");
 		}
-		return null;
 	}
 	
 	public ActionForward currVote(ActionMapping mapping, ActionForm form,
@@ -125,7 +135,7 @@ public class VoteAction extends DispatchAction {
 		int voteId = Integer.parseInt(request.getParameter("voteId"));
 //		System.out.println("voteId:"+voteId);
 		
-		getCurrVote(voteId,request,response);
+		getCurrVote(mapping,voteId,request,response);
 		return null;
 	}
 	
@@ -143,12 +153,12 @@ public class VoteAction extends DispatchAction {
 		for(String op:options)
 			ok = voteDao.do_vote(voteId, op,userid);
 		if(ok){
-			getCurrVote(voteId,request,response);
+			getCurrVote(mapping,voteId,request,response);
 		}	
 		return null;
 	}
 	
-	private void getCurrVote(int voteId,HttpServletRequest request, HttpServletResponse response){
+	private ActionForward getCurrVote(ActionMapping mapping,int voteId,HttpServletRequest request, HttpServletResponse response){
 		VoteDao voteDao = new VoteDao();
 		
 		HttpSession session = request.getSession();
@@ -199,17 +209,21 @@ public class VoteAction extends DispatchAction {
 			session.setAttribute("currVote", currVote);
 			session.setAttribute("optionList", currVote.getOptionList());
 			session.setAttribute("affixs", currVote.getAffixFiles());
-			try {
-				response.sendRedirect("VoteDetail.jsp");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				response.sendRedirect("VoteDetail.jsp");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			session.setAttribute("url", "VoteDetail.jsp");
+			return mapping.findForward("go");
 		} else {
-			try {
-				response.sendRedirect("pageNotAvailable.jsp");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				response.sendRedirect("pageNotAvailable.jsp");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			session.setAttribute("url", "pageNotAvailable.jsp");
+			return mapping.findForward("go");
 		}
 	}
 	
@@ -235,8 +249,11 @@ public class VoteAction extends DispatchAction {
 		
 		VoteDao voteDao = new VoteDao();
 		int count = voteDao.add_vote_affix(affix);
-		if(count > 0)
-			return mapping.findForward("add_vote_affix");
+		if(count > 0){
+//			return mapping.findForward("add_vote_affix");
+			session.setAttribute("url", "uploadSuccess.jsp");
+			return mapping.findForward("go");
+		}
 		
 		return null;
 	}

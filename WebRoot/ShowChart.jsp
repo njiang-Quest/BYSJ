@@ -7,7 +7,7 @@
     
   <body> 
     <center> 
-        <img alt="图表" src="${chartUrl }"> 
+        <img alt="图表" src="${subChartUrl }"> 
     </center> 
   </body> 
 </html> 

@@ -47,6 +47,7 @@
       <forward name="fail" path="/appraisal.jsp" />
       <forward name="do_app" path="/do_appraisal.jsp"></forward>
       <forward name="show" path="/ShowChart.jsp"></forward>
+      <forward name="go" path="/go.jsp"></forward>
     </action>
     
   </action-mappings>

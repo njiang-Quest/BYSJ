@@ -33,6 +33,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.servlet.ServletUtilities;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
 
 import com.bysj.bean.AppAnswerBean;
@@ -141,23 +142,28 @@ public class AppraisalAction extends DispatchAction {
 		app.setOptions(optionList);
 		
 		AppraisalDao dao = new AppraisalDao();
-		if(dao.addAppraisal(app))
-			return mapping.findForward("success");
-		
-		return mapping.findForward("fail");
+		HttpSession session = request.getSession();
+		if(dao.addAppraisal(app)){
+//			return mapping.findForward("success");
+			session.setAttribute("url", "viewApps.jsp");
+			return mapping.findForward("go");
+		}
+		else{
+			session.setAttribute("url", "appraisal.jsp");
+			return mapping.findForward("fail");
+		}
 	}
 	
 	public ActionForward getApps(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		AppraisalDao dao = new AppraisalDao();
 		List<AppraisalBean> apps = dao.getAllApps();
-		if(!apps.isEmpty()){
-			HttpSession session = request.getSession();
+		HttpSession session = request.getSession();
+		if(!apps.isEmpty())
 			session.setAttribute("apps", apps);
-			
-		}
-	
-		return mapping.findForward("success");
+//		return mapping.findForward("success");
+		session.setAttribute("url", "viewApps.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward getCurrApp(ActionMapping mapping, ActionForm form,
@@ -181,7 +187,9 @@ public class AppraisalAction extends DispatchAction {
 		session.setAttribute("preAnswerLent", currApp.getOptions().size()*currApp.getBeipings().length);
 		session.setAttribute("affixs",affixs);
 		session.setAttribute("currApp", currApp);
-		return mapping.findForward("do_app");
+//		return mapping.findForward("do_app");
+		session.setAttribute("url", "do_appraisal.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward save_appAnswer(ActionMapping mapping, ActionForm form,
@@ -208,7 +216,9 @@ public class AppraisalAction extends DispatchAction {
 			answerList.add(answer);
 		}
 		session.setAttribute("answerListSize", answerList.size());
-		return mapping.findForward("do_app");
+//		return mapping.findForward("do_app");
+		session.setAttribute("url", "do_appraisal.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward commit_appAnswer(ActionMapping mapping, ActionForm form,
@@ -219,16 +229,20 @@ public class AppraisalAction extends DispatchAction {
 		String user = ((MuserBean)session.getAttribute("currUser")).getName();
 		dao.do_answers(answerList,user);
 		request.setAttribute("haveallanswer", "1"); 
-		return mapping.findForward("do_app");
+//		return mapping.findForward("do_app");
+		session.setAttribute("url", "do_appraisal.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward subShowChart(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response) {
 		
-		int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
-		AppraisalDao dao = new AppraisalDao();
-		CategoryDataset dataset = dao.summary(appid);
-//		CategoryDataset dataset=getCategoryDataSet();//获得数据集
+//		int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
+//		AppraisalDao dao = new AppraisalDao();
+//		CategoryDataset dataset = dao.summary(appid);
+		
+		CategoryDataset dataset=getCategoryDataSet();//获得数据集
+		
 		JFreeChart chart = ChartFactory.createBarChart3D(
 		"考评详细得分情况", // 图表标题
 		"考评人", // 目录轴的显示标签
@@ -274,8 +288,11 @@ public class AppraisalAction extends DispatchAction {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		request.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
-		return mapping.findForward("do_app");
+		HttpSession session = request.getSession();
+		session.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+//		return mapping.findForward("do_app");
+		session.setAttribute("url", "ShowChart.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward showChart(ActionMapping mapping, ActionForm form,
@@ -329,7 +346,18 @@ public class AppraisalAction extends DispatchAction {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
-			return mapping.findForward("do_app");
+			HttpSession session = request.getSession();
+			session.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+//			return mapping.findForward("do_app");
+			session.setAttribute("url", "do_appraisal.jsp");
+			return mapping.findForward("go");
 		}
+	
+	private DefaultCategoryDataset getCategoryDataSet(){
+		DefaultCategoryDataset data = new DefaultCategoryDataset();
+		data.setValue(200, "", "苹果");
+		data.setValue(300, "", "荔枝");
+		data.setValue(500, "", "栗子");
+		return data;
+	}
 }

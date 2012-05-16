@@ -23,20 +23,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	<script language=javascript src="js/wpCalendar.js"></script>
 	<style type="text/css">
-		body{
-			margin-right:200px;
-			margin-left:200px;
-		}
 		
-		.sss{
-			 margin-left:200px; 
-			 margin-top:400px; 
-			 padding-left:30px;
-			 padding-top:40px;
-			 padding-right:30px;
-			 padding-bottom:40px;
-			 border-width:20px;
-	    }
+	 .sss{
+		 margin-left:400px; 
+		 margin-top:400px; 
+		 padding-left:40px;
+		 padding-top:40px;
+		 padding-right:40px;
+		 padding-bottom:40px;
+		 border-width:20px;
+	 }
 	</style>
 	
 	<script type="text/javascript">
@@ -108,9 +104,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-	  	<table width=100% height=50 background='image/lightblue.jpg'>
-	  		  <tr><td align = right> Welcome ${currUser.name }(${currUser.id})&nbsp;&nbsp;<a href='Login.jsp'>sign out</a>&nbsp;&nbsp;</td></tr>
-	  	</table>
+	  
 	  	<p/>
 	  	
    	<form method = post action='appraisal.do?action=addAppraisal' onsubmit="return mycheck()">

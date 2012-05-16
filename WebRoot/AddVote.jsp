@@ -23,11 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	<script language=javascript src="js/wpCalendar.js"></script>
 	<style type="text/css">
-		body{
-			margin-right:200px;
-			margin-left:200px;
-		}
-		
+	
 	 .sss{
 		 margin-left:400px; 
 		 margin-top:400px; 
@@ -170,10 +166,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
   </head>
   
-  <body leftmargin=200 rightmargin=200>
-	  	<table width=100% background='image/lightblue.jpg'>
-	  		  <tr><td align = right> Welcome ${currUser.name }(${currUser.id})&nbsp;&nbsp;<a href='Login.jsp'>sign out</a>&nbsp;&nbsp;</td></tr>
-	  	</table>
+  <body >
+	  	
 	  	<p/>
   	<form action="vote.do?action=addVote" method = post name=addVoteForm onsubmit="return voteOptions()">
      <table  border="2" align=center width=870><tr><td class='sss'>

@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.bysj.bean.MuserBean;
+import com.bysj.common.StringUtil;
 import com.bysj.dao.LoginDao;
 import com.bysj.struts.form.LoginForm;
 
@@ -47,12 +48,7 @@ public class LoginAction extends Action {
 		
 		LoginForm loginForm = (LoginForm) form;// TODO Auto-generated method stub
 
-			try {
-				request.setCharacterEncoding("GB2312");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			String username = loginForm.getUsername();
+			String username = StringUtil.toGB2312(loginForm.getUsername());
 			String pwd = loginForm.getPassword();
 			
 			MuserBean user = new MuserBean();
