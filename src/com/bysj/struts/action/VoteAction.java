@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
+import com.bysj.bean.AppraisalBean;
 import com.bysj.bean.MuserBean;
 import com.bysj.bean.VoteAffixBean;
 import com.bysj.bean.VoteBean;
@@ -174,7 +175,7 @@ public class VoteAction extends DispatchAction {
 				voteDetail_list.add(voteDetail);
 //				System.out.println("percentage:"+voteDetail.getPercentage());
 				
-				affixs = voteDao.getPath(voteId,currVote.getOptionList()[i],affixs);
+				affixs = voteDao.getPath(voteId,currVote.getOptionList()[i],"vote",affixs);
 
 			}
 			currVote.setVoteDetail(voteDetail_list);
@@ -215,14 +216,22 @@ public class VoteAction extends DispatchAction {
 	public ActionForward add_vote_affix(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		String username = ((MuserBean)session.getAttribute("currUser")).getName();
-		int voteid = ((VoteBean)session.getAttribute("currVote")).getVoteId();
 		String path = StringUtil.toGB2312(request.getParameter("path"));
+		String affixType = request.getParameter("affixType");
 		System.out.println("path:"+path);
+		System.out.println("affixType:"+affixType);
+		String username = ((MuserBean)session.getAttribute("currUser")).getName();
+		int id = 0;
+		if(affixType.equals("app"))
+			id = ((AppraisalBean)session.getAttribute("currApp")).getId();
+		else
+			id = ((VoteBean)session.getAttribute("currVote")).getVoteId();
+		
 		VoteAffixBean affix = new VoteAffixBean();
 		affix.setPathName(path);
 		affix.setAoption(username);
-		affix.setVoteid(voteid);
+		affix.setVoteid(id);
+		affix.setAffixType(affixType);
 		
 		VoteDao voteDao = new VoteDao();
 		int count = voteDao.add_vote_affix(affix);

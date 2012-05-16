@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee   http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-  <servlet>
+
+<servlet>
     <servlet-name>action</servlet-name>
     <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
     <init-param>
@@ -16,33 +17,20 @@
       <param-value>3</param-value>
     </init-param>
     <load-on-startup>0</load-on-startup>
-  </servlet>
-  <servlet-mapping>
+</servlet>
+   <servlet>
+            <servlet-name>DisplayChart</servlet-name >
+            <servlet-class>org.jfree.chart.servlet.DisplayChart </servlet-class>
+    </servlet>
+<servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
-  </servlet-mapping>
-  <welcome-file-list>
+</servlet-mapping>
+<servlet-mapping>
+            <servlet-name>DisplayChart</servlet-name>
+            <url-pattern>/servlet/DisplayChart</url-pattern>
+   </servlet-mapping>
+<welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
- <!--  
-  <filter>
-    <filter-name>Filter</filter-name>
-    <filter-class>com.bysj.common.DataFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>GBK</param-value>
-    </init-param>
-    <init-param>
-      <param-name>ignore</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
- 
- 
- <mime-mapping>
-    <extension>doc</extension>
-    <mime-type>application/vnd.ms-word</mime-type>
-  </mime-mapping>
-  -->  
+</welcome-file-list>
 </web-app>
-

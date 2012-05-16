@@ -6,7 +6,14 @@ public class VoteAffixBean {
 	private int voteid;
 	private String aoption;
 	private String pathName;
+	private String affixType;
 	
+	public String getAffixType() {
+		return affixType;
+	}
+	public void setAffixType(String affixType) {
+		this.affixType = affixType;
+	}
 	public int getVote_affix_id() {
 		return vote_affix_id;
 	}

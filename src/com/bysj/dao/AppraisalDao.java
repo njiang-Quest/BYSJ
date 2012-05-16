@@ -8,6 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import com.bysj.bean.AppAnswerBean;
+import com.bysj.bean.AppYiPingBean;
 import com.bysj.bean.AppraisalBean;
 import com.bysj.bean.AppraisalOptionBean;
 import com.bysj.common.ConnectionUtil;
@@ -169,6 +173,8 @@ public class AppraisalDao {
 			rs = ps.executeQuery();
 			while(rs.next()){
 				AppraisalOptionBean option = new AppraisalOptionBean();
+				option.setId(rs.getInt(1));
+				option.setAppid(rs.getInt(2));
 				option.setOption(rs.getString(3));
 				option.setEscore(rs.getString(4));
 				option.setTscore(rs.getString(5));
@@ -181,5 +187,119 @@ public class AppraisalDao {
 			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
 		return list;
+	}
+	
+	public int do_answer(AppAnswerBean an) {
+		conn = ConnectionUtil.getConnection();
+		int count = 0;
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.DO_ANSWER);
+			ps.setInt(1, an.getAppid());
+			ps.setString(2, an.getOption());
+			ps.setString(3, an.getBeiping());
+			ps.setInt(4, an.getScore());
+			
+			count = ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
+		}
+		return count;
+	}
+	
+	public int do_answers(List<AppAnswerBean> answerList,String canping) {
+		int count = 1;
+		conn = ConnectionUtil.getConnection();
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.DO_ANSWER);
+			
+			for(int i= 0;i <answerList.size();i++){
+				AppAnswerBean an = answerList.get(i);
+				ps.setInt(1, an.getAppid());
+				ps.setString(2, an.getOption());
+				ps.setString(3, an.getBeiping());
+				ps.setInt(4, an.getScore());
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
+		}
+		canping(canping);
+		return count;
+	}
+	
+	private int canping(String canping){
+		conn = ConnectionUtil.getConnection();
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.CANPING);
+			ps.setString(1, canping);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
+		}
+		return 0;
+	}
+	
+	public boolean is_readly_ping(String user,int appid) {
+		conn = ConnectionUtil.getConnection();
+		boolean falg = false;
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.ALREADYPING);
+			ps.setInt(1, appid);
+			ps.setString(2, user);
+			rs = ps.executeQuery();
+			if(rs.next()) 
+				falg = true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return falg;
+		
+	}
+	
+	public DefaultCategoryDataset summary(int appid) {
+		conn = ConnectionUtil.getConnection();
+		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.SUMMARY);
+			ps.setInt(1, appid);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				dataset.addValue(rs.getInt(3), rs.getString(1), rs.getString(2));
+//				dataset.addValue(100, "北京", "苹果");
+//				dataset.addValue(100, "上海", "苹果");
+//				dataset.addValue(100, "广州", "苹果");
+//				dataset.addValue(200, "北京", "梨子");
+//				dataset.addValue(200, "上海", "梨子");
+//				dataset.addValue(200, "广州", "梨子");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dataset;
+	}
+	
+	public DefaultCategoryDataset aSummary(int appid) {
+		conn = ConnectionUtil.getConnection();
+		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.ASUMMARY);
+			ps.setInt(1, appid);
+			rs = ps.executeQuery();
+			while(rs.next())
+				dataset.addValue(rs.getInt(2), "", rs.getString(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return dataset;
 	}
 }

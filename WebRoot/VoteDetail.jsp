@@ -53,6 +53,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				VoteBean vote = (VoteBean)session.getAttribute("currVote");
 				int status = vote.getStatus();
 				if(status == 1){
+					session.setAttribute("affixType", "vote");
 			%>
 					window.open( 'uploadFile.jsp','_self');
 			<%
@@ -133,20 +134,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		</div>
     		<tr><td colspan=3>&nbsp;</td></tr>
     		<tr><td colspan=3>
-    			<c:if test="${currVote.status == 1}">
+    			<c:if test="${currVote.status == 1 && !currUser.already_vote}">
     				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' onclick=v() />
     			</c:if>
     			
     			<c:if test="${currVote.status == 0}">
     				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' disabled/><font color=gray size=2>(The voting is over)</font>
     			</c:if>
-    			<!-- 
-    			c:if test="${currVote.status == 1 && !currUser.already_vote}">
     			
     			<c:if test="${currVote.status == 1 && currUser.already_vote}">
     				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' disabled/><font color=gray size=2>(You have already vote)</font>
     			</c:if>
-    			 -->
     		</td></tr>
     	</table>  	
     </form>

@@ -19,4 +19,19 @@ public interface AppraisalSQLStatement {
 	
 	//get options
 	String CURROPTIONS = "SELECT * FROM APP_OPTION WHERE APPID=?";
+	
+	//do 
+	String DO_ANSWER = "INSERT INTO APP_ANSWER VALUES(APP_ANSWER_ID.nextval, ?,?,?,?)";
+
+	//people take part in canpingren
+	String CANPING = "INSERT INTO APP_YIPING VALYES(APP_YIPING_ID.nextval,?,SYSDATE";
+
+	//have already ping
+	String ALREADYPING = "SELECT * FROM APP_YIPING WHERE APPID=? AND CANPINGREN=?";
+	
+	//summary
+	String SUMMARY = "select  aoption, kaopingren,sum(escore) from app_answer where appid=? group by aoption,kaopingren order by kaopingren";
+	
+	//aSummart
+	String ASUMMARY = "select  kaopingren,sum(escore) from app_answer where appid=? group by kaopingren order by kaopingren";
 }

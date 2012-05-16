@@ -7,14 +7,23 @@
   <StrutsActivity path="/Login.jsp" location="195,15" dimension="100,48" />
   <StrutsActivity path="/uploadSuccess.jsp" location="950,250" dimension="148,48" />
   <StrutsActivity path="/AddVote.jsp" location="555,15" dimension="112,48" />
+  <StrutsActivity path="/do_appraisal.jsp" location="950,350" dimension="142,48" />
   <StrutsActivity path="/appraisal.jsp" location="120,255" dimension="124,48" />
   <StrutsActivity path="uploadSuccess.jsp" location="950,150" dimension="142,48" />
   <StrutsActivity path="do_appraisal.jsp" location="650,350" dimension="136,48" />
-  <StrutsActivity path="/do_appraisal.jsp" />
-  <StrutsTransition id="/appraisal.do,fail,/appraisal.jsp,1" routingType="0">
+  <StrutsActivity path="/ShowChart.jsp" location="50,550" dimension="124,48" />
+  <StrutsTransition id="/appraisal.do,show,/ShowChart.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="197,345" />
-      <AbsolutePoint location="197,303" />
+      <AbsolutePoint location="197,387" />
+      <AbsolutePoint location="112,574" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/index.jsp,null,/FreeChart.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="145,63" />
+      <AbsolutePoint location="145,108" />
+      <AbsolutePoint location="801,108" />
+      <AbsolutePoint location="801,450" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/loginAction.do,fail,/Login.jsp,1" routingType="0">
@@ -23,22 +32,10 @@
       <AbsolutePoint location="210,63" />
     </AutomaticBendpoints>
   </StrutsTransition>
-  <StrutsTransition id="/appraisal.jsp,null,/appraisal.do,2" routingType="0">
-    <AutomaticBendpoints>
-      <AbsolutePoint location="227,303" />
-      <AbsolutePoint location="227,345" />
-    </AutomaticBendpoints>
-  </StrutsTransition>
   <StrutsTransition id="/appraisal.do,do_app,/do_appraisal.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="197,387" />
       <AbsolutePoint location="0,0" />
-    </AutomaticBendpoints>
-  </StrutsTransition>
-  <StrutsTransition id="/appraisal.do,do_app,do_appraisal.jsp,1" routingType="0">
-    <AutomaticBendpoints>
-      <AbsolutePoint location="334,383" />
-      <AbsolutePoint location="650,383" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/appraisal.do,success,/index.jsp,1" routingType="0">
@@ -47,12 +44,6 @@
       <AbsolutePoint location="-45,387" />
       <AbsolutePoint location="-45,39" />
       <AbsolutePoint location="60,39" />
-    </AutomaticBendpoints>
-  </StrutsTransition>
-  <StrutsTransition id="/loginAction.do,success,/index.jsp,1" routingType="0">
-    <AutomaticBendpoints>
-      <AbsolutePoint location="145,135" />
-      <AbsolutePoint location="145,63" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/vote.do,fail,/AddVote.jsp,1" routingType="0">
@@ -67,22 +58,47 @@
       <AbsolutePoint location="245,135" />
     </AutomaticBendpoints>
   </StrutsTransition>
+  <StrutsTransition id="/FreeChart.do,show,/ShowChart.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="650,492" />
+      <AbsolutePoint location="112,492" />
+      <AbsolutePoint location="112,550" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
   <StrutsTransition id="/AddVote.jsp,null,/vote.do,2" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="611,63" />
       <AbsolutePoint location="611,135" />
     </AutomaticBendpoints>
   </StrutsTransition>
-  <StrutsTransition id="/vote.do,success,/index.jsp,1" routingType="0">
+  <StrutsTransition id="/appraisal.do,fail,/appraisal.jsp,1" routingType="0">
     <AutomaticBendpoints>
-      <AbsolutePoint location="527,177" />
-      <AbsolutePoint location="110,39" />
+      <AbsolutePoint location="197,345" />
+      <AbsolutePoint location="197,303" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/appraisal.jsp,null,/appraisal.do,2" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="227,303" />
+      <AbsolutePoint location="227,345" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/loginAction.do,success,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="110,135" />
+      <AbsolutePoint location="110,63" />
     </AutomaticBendpoints>
   </StrutsTransition>
   <StrutsTransition id="/vote.do,add_vote_affix,/uploadSuccess.jsp,1" routingType="0">
     <AutomaticBendpoints>
       <AbsolutePoint location="527,177" />
       <AbsolutePoint location="0,0" />
+    </AutomaticBendpoints>
+  </StrutsTransition>
+  <StrutsTransition id="/vote.do,success,/index.jsp,1" routingType="0">
+    <AutomaticBendpoints>
+      <AbsolutePoint location="527,177" />
+      <AbsolutePoint location="110,39" />
     </AutomaticBendpoints>
   </StrutsTransition>
 </FlowViewLayout>

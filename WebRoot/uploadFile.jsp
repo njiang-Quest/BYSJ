@@ -29,7 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				return false;
 			} else {
 				alert(affix)
-				if( !(affix=='doc' || affix =='docx' || affix=='txt' || affix=='pdf' || affix=='sql') )
+				if( !(affix=='doc' || affix =='docx' || affix=='txt' || affix=='pdf' || affix=='sql' || affix=='log') )
 				{
 					alert('This file type is not allow, please select another one..');
 					return false;

@@ -46,20 +46,20 @@ public interface VoteSQLStatement {
 	String TOUPIAOREN = "SELECT TOUPIAOREN FROM VOTE_DETAIL WHERE VOTEID=? AND DOPTION=?";
 	
 	//User add affix in order to win the voting(first time)
-	String ADD_AFFIX = "INSERT INTO VOTE_AFFIX VALUES(VOTE_AFFIX_ID.NEXTVAL, ?, ?, ?)";
+	String ADD_AFFIX = "INSERT INTO VOTE_AFFIX VALUES(VOTE_AFFIX_ID.NEXTVAL, ?, ?, ?,?)";
 
 	//Is this the first time to upload files to this vote
-	String 	ISFIRSF_AFFIX = "SELECT * FROM VOTE_AFFIX WHERE VOTEID=? AND aoption=?";
+	String 	ISFIRSF_AFFIX = "SELECT * FROM VOTE_AFFIX WHERE VOTEID=? AND aoption=? AND AFFIXTYPE=?";
 
 	//this is not the first to add affix
-	String NOTFIRSTTIME = "UPDATE VOTE_AFFIX SET PATHNAME=? WHERE VOTEID=? AND aoption=?";
+	String NOTFIRSTTIME = "UPDATE VOTE_AFFIX SET PATHNAME=? WHERE VOTEID=? AND aoption=? AND AFFIXTYPE=?";
 	
 	//get one user 's path
 	String GETPATH = "SELECT PATHNAME FROM VOTE_AFFIX WHERE VOTEID=? AND aoption=?";
 	
 	
 	//get one user 's path
-	String GETALLPATH = "SELECT PATHNAME, aoption FROM VOTE_AFFIX WHERE VOTEID=? and aoption=?";
+	String GETALLPATH = "SELECT PATHNAME, aoption FROM VOTE_AFFIX WHERE VOTEID=? and aoption=? and affixtype=?";
 	
 	
 }

@@ -4,8 +4,14 @@
  */
 package com.bysj.struts.action;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,11 +22,27 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.BarRenderer3D;
+import org.jfree.chart.servlet.ServletUtilities;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.ui.TextAnchor;
 
+import com.bysj.bean.AppAnswerBean;
 import com.bysj.bean.AppraisalBean;
 import com.bysj.bean.AppraisalOptionBean;
+import com.bysj.bean.MuserBean;
+import com.bysj.bean.VoteDetailBean;
 import com.bysj.common.StringUtil;
 import com.bysj.dao.AppraisalDao;
+import com.bysj.dao.VoteDao;
 import com.bysj.struts.form.AppraisalForm;
 
 /** 
@@ -142,11 +164,172 @@ public class AppraisalAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		
 		int id = Integer.valueOf(request.getParameter("appid"));
-		System.out.println("id:" + id);
 		HttpSession session = request.getSession();
 		AppraisalDao dao = new AppraisalDao();
-		session.setAttribute("currApp", dao.getCurrApp(id));
+		
+		String user = ((MuserBean)session.getAttribute("currUser")).getName();
+		boolean isyiping = dao.is_readly_ping(user, id);
+		session.setAttribute("isyiping", isyiping);
+		
+		
+		AppraisalBean currApp = dao.getCurrApp(id);
+		
+		VoteDao voteDao = new VoteDao();
+		Hashtable<String,String> affixs = new Hashtable<String,String>();
+		for(int i =0;i<currApp.getBeipings().length;i++)
+			affixs = voteDao.getPath(id,currApp.getBeipings()[i],"app",affixs);
+		session.setAttribute("preAnswerLent", currApp.getOptions().size()*currApp.getBeipings().length);
+		session.setAttribute("affixs",affixs);
+		session.setAttribute("currApp", currApp);
 		return mapping.findForward("do_app");
 	}
 	
+	public ActionForward save_appAnswer(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String beiping = StringUtil.toGB2312(request.getParameter("beipingren"));
+		AppraisalBean app = (AppraisalBean)session.getAttribute("currApp");
+		List<AppraisalOptionBean> options = app.getOptions();
+		List<AppAnswerBean> answerList = (List<AppAnswerBean> ) session.getAttribute("answerList");
+		if(answerList==null){
+			answerList= new ArrayList<AppAnswerBean>();
+			session.setAttribute("answerList", answerList);
+		}
+		for(int i = 0;i<options.size();i++){
+			AppAnswerBean answer = new AppAnswerBean();
+			String option = options.get(i).getOption();
+			
+			String strScore = request.getParameter("score"+options.get(i).getId());
+			int score = new Integer(strScore);
+			answer.setOption(option);
+			answer.setScore(score);
+			answer.setBeiping(beiping);
+			answer.setAppid(app.getId());
+			answerList.add(answer);
+		}
+		session.setAttribute("answerListSize", answerList.size());
+		return mapping.findForward("do_app");
+	}
+	
+	public ActionForward commit_appAnswer(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) {
+		AppraisalDao dao = new AppraisalDao();
+		HttpSession session = request.getSession();
+		List<AppAnswerBean> answerList = (List<AppAnswerBean> ) session.getAttribute("answerList");
+		String user = ((MuserBean)session.getAttribute("currUser")).getName();
+		dao.do_answers(answerList,user);
+		request.setAttribute("haveallanswer", "1"); 
+		return mapping.findForward("do_app");
+	}
+	
+	public ActionForward subShowChart(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response) {
+		
+		int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
+		AppraisalDao dao = new AppraisalDao();
+		CategoryDataset dataset = dao.summary(appid);
+//		CategoryDataset dataset=getCategoryDataSet();//获得数据集
+		JFreeChart chart = ChartFactory.createBarChart3D(
+		"考评详细得分情况", // 图表标题
+		"考评人", // 目录轴的显示标签
+		"分数", // 数值轴的显示标签
+		dataset, // 数据集
+		PlotOrientation.VERTICAL, // 图表方向：水平、垂直
+		true, // 是否显示图例(对于简单的柱状图必须是false)
+		true, // 是否生成工具
+		false // 是否生成URL链接
+		);
+		
+		CategoryPlot plot = chart.getCategoryPlot();     
+		//设置网格背景颜色   
+		plot.setBackgroundPaint(Color.white);   
+		//设置网格竖线颜色   
+		plot.setDomainGridlinePaint(Color.pink);   
+		//设置网格横线颜色   
+		plot.setRangeGridlinePaint(Color.pink);   
+		  
+		//显示每个柱的数值，并修改该数值的字体属性   
+		BarRenderer3D renderer = new BarRenderer3D();   
+		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());   
+		renderer.setBaseItemLabelsVisible(true);   
+		  
+		//默认的数字显示在柱子中，通过如下两句可调整数字的显示   
+		//注意：此句很关键，若无此句，那数字的显示会被覆盖，给人数字没有显示出来的问题   
+		renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));   
+		renderer.setItemLabelAnchorOffset(10D);  
+		//设置每个地区所包含的平行柱的之间距离   
+//		renderer.setItemMargin(0.4);   
+		plot.setRenderer(renderer);  
+		
+		chart.getTitle().setFont(new Font("新宋体 ",Font.BOLD,15));//设置图表标题字体样式
+		Font font=new Font("楷体",Font.PLAIN,12);
+		chart.getCategoryPlot().getDomainAxis().setLabelFont(font);//设置图表横坐标轴标题字体样式
+		chart.getCategoryPlot().getRangeAxis().setLabelFont(font);//设置图表纵坐标轴标题字体样式
+		chart.getCategoryPlot().getDomainAxis().setTickLabelFont(font);//设置图表横坐标轴目录字体样式
+		chart.getLegend().setItemFont(font);//设置图示字体样式
+		chart.getCategoryPlot();
+		String filename = null;
+		try {
+			filename = ServletUtilities.saveChartAsJPEG(chart, 600, 600, request.getSession());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		request.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+		return mapping.findForward("do_app");
+	}
+	
+	public ActionForward showChart(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) {
+			
+			int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
+			AppraisalDao dao = new AppraisalDao();
+			CategoryDataset dataset = dao.aSummary(appid);
+//			CategoryDataset dataset=getCategoryDataSet();//获得数据集
+			JFreeChart chart = ChartFactory.createBarChart3D(
+			"考评总分情况", // 图表标题
+			"考评人", // 目录轴的显示标签
+			"分数", // 数值轴的显示标签
+			dataset, // 数据集
+			PlotOrientation.HORIZONTAL, // 图表方向：水平、垂直
+			true, // 是否显示图例(对于简单的柱状图必须是false)
+			true, // 是否生成工具
+			false // 是否生成URL链接
+			);
+			
+			CategoryPlot plot = chart.getCategoryPlot();    
+			//设置网格背景颜色  
+			plot.setBackgroundPaint(Color.white);  
+			//设置网格竖线颜色  
+			plot.setDomainGridlinePaint(Color.pink);  
+			//设置网格横线颜色  
+			plot.setRangeGridlinePaint(Color.pink);  
+			  
+			//显示每个柱的数值，并修改该数值的字体属性  
+			BarRenderer renderer = new BarRenderer();  
+			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());  
+			renderer.setBaseItemLabelsVisible(true);  
+			  
+			//默认的数字显示在柱子中，通过如下两句可调整数字的显示  
+			//注意：此句很关键，若无此句，那数字的显示会被覆盖，给人数字没有显示出来的问题  
+			renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE3, TextAnchor.BASELINE_RIGHT));  
+			renderer.setItemLabelAnchorOffset(10D);  
+			  
+			plot.setRenderer(renderer);  
+			
+			chart.getTitle().setFont(new Font("新宋体 ",Font.BOLD,15));//设置图表标题字体样式
+			Font font=new Font("楷体",Font.PLAIN,12);
+			chart.getCategoryPlot().getDomainAxis().setLabelFont(font);//设置图表横坐标轴标题字体样式
+			chart.getCategoryPlot().getRangeAxis().setLabelFont(font);//设置图表纵坐标轴标题字体样式
+			chart.getCategoryPlot().getDomainAxis().setTickLabelFont(font);//设置图表横坐标轴目录字体样式
+			chart.getLegend().setItemFont(font);//设置图示字体样式
+			chart.getCategoryPlot();
+			String filename = null;
+			try {
+				filename = ServletUtilities.saveChartAsJPEG(chart, 600, 300, request.getSession());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			request.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+			return mapping.findForward("do_app");
+		}
 }

@@ -27,13 +27,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <%
 	  		SmartUpload su = new SmartUpload();	
 	  		su.initialize(pageContext);
-	  		su.setAllowedFilesList("doc,docx,pdf,txt,sql");
+	  		su.setAllowedFilesList("doc,docx,pdf,txt,sql,log");
 	  	    su.upload();
 	  		int count = su.save("/upload",su.SAVE_VIRTUAL);
 	  		String file = su.getFiles().getFile(0).getFileName();
 	  		session.setAttribute("file",file);
 	   %>
-	   <jsp:forward page='vote.do?action=add_vote_affix&path=${file}'></jsp:forward>
+	   <jsp:forward page='vote.do?action=add_vote_affix&path=${file}&affixType=${affixType }'></jsp:forward>
 	  
   </body>
 </html>

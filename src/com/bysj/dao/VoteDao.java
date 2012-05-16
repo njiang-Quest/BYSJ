@@ -141,13 +141,14 @@ public class VoteDao {
 	  * value:path
 	  * get path of the option
 	  */
-	  public Hashtable<String,String> getPath(int voteid,String option, Hashtable<String,String> affixs) {
+	  public Hashtable<String,String> getPath(int voteid,String option,String affixtype, Hashtable<String,String> affixs) {
 		 conn = ConnectionUtil.getConnection();
 //		 Map<String,String> affixs = new HashMap<String,String>();
 		 try {
 			ps = conn.prepareStatement(VoteSQLStatement.GETALLPATH);
 			ps.setInt(1, voteid);
 			ps.setString(2, option);
+			ps.setString(3, affixtype);
 			rs = ps.executeQuery();
 			if(rs.next()){
 				String path = rs.getString(1);
@@ -416,7 +417,7 @@ public class VoteDao {
 	  * add vote affix
 	  */
 	 public int add_vote_affix(VoteAffixBean affix){
-		  if(is_first_time_affix(affix.getAoption(),affix.getVoteid())) 
+		  if(is_first_time_affix(affix.getAoption(),affix.getVoteid(),affix.getAffixType()) )
 			  return add_affix_firstTime(affix);
 		  else
 			  return update_path(affix);
@@ -433,6 +434,7 @@ public class VoteDao {
 			ps.setInt(1, affix.getVoteid());
 			ps.setString(2, affix.getPathName());
 			ps.setString(3, affix.getAoption());
+			ps.setString(4, affix.getAffixType());
 			count = ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -455,6 +457,7 @@ public class VoteDao {
 			ps.setString(1, path+affix.getPathName());
 			ps.setInt(2, affix.getVoteid());
 			ps.setString(3, affix.getAoption());
+			ps.setString(4, affix.getAffixType());
 			
 			count = ps.executeUpdate();
 		} catch (SQLException e) {
@@ -469,12 +472,13 @@ public class VoteDao {
 	 /*
 	  * is this the first to upload file to the voting
 	  */
-	 public boolean is_first_time_affix(String username,int voteid){
+	 public boolean is_first_time_affix(String username,int voteid,String type){
 		 conn = ConnectionUtil.getConnection();
 		 try {
 			ps = conn.prepareStatement(VoteSQLStatement.ISFIRSF_AFFIX);
 			ps.setInt(1, voteid);
 			ps.setString(2, username);
+			ps.setString(3, type);
 			rs = ps.executeQuery();
 			if(rs.next())
 				return false;

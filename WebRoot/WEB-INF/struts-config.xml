@@ -46,10 +46,9 @@
       <forward name="success" path="/index.jsp" />
       <forward name="fail" path="/appraisal.jsp" />
       <forward name="do_app" path="/do_appraisal.jsp"></forward>
+      <forward name="show" path="/ShowChart.jsp"></forward>
     </action>
     
-    
-
   </action-mappings>
 
   <message-resources parameter="com.bysj.struts.ApplicationResources" />

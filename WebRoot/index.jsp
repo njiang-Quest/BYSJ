@@ -93,6 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	</logic:notEmpty>
 		  	</div>
 	  	</form>
-	  	
+	  	<a href="test.jsp">ͼ</a>
+	  
   </body>
 </html>
