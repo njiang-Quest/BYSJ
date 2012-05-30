@@ -68,12 +68,6 @@ public class AppraisalAction extends DispatchAction {
 	 * @param response
 	 * @return ActionForward
 	 */
-//	public ActionForward execute(ActionMapping mapping, ActionForm form,
-//			HttpServletRequest request, HttpServletResponse response) {
-//		AppraisalForm appraisalForm = (AppraisalForm) form;// TODO Auto-generated method stub
-//		return null;
-//	}
-//	
 	public ActionForward addAppraisal(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) {
 		AppraisalForm appraisalForm = (AppraisalForm) form;// TODO Auto-generated method stub
@@ -100,11 +94,6 @@ public class AppraisalAction extends DispatchAction {
 		System.out.println("title:" + app.getTitle());
 		System.out.println("beipings:" + beiping);
 		
-//		String[] canpings = appraisalForm.getCanping();
-//		String canping = StringUtil.list2String(canpings);
-//		canping = StringUtil.toGB2312(canping);
-//		canpings = canping.split(",");
-//		app.setCanpings(canpings);
 		String canpingF = appraisalForm.getCanping();
 		app.setCanping(StringUtil.toGB2312(appraisalForm.getCanping()));
 		if(canpingF == "0"){ //all person
@@ -121,13 +110,6 @@ public class AppraisalAction extends DispatchAction {
 		String[] e = request.getParameter("e").split("-");
 		String[] t = request.getParameter("t").split("-");
 			
-//		String escore = new int[e.length];
-//		String tscore = new int[t.length];
-//		for(int i=0;i<e.length;i++) {
-//			escore[i] = Integer.parseInt(e[i]);
-//			tscore[i] = Integer.parseInt(t[i]);
-//		}
-		
 		List<AppraisalOptionBean> optionList = new ArrayList<AppraisalOptionBean>();
  		for(int i = 0; i<options.length; i++){
  			AppraisalOptionBean appoption = new AppraisalOptionBean();
@@ -136,17 +118,16 @@ public class AppraisalAction extends DispatchAction {
  			appoption.setEscore(e[i]);
  			appoption.setTscore(t[i]);
  			optionList.add(appoption);
-// 			System.out.println("e:" + e[i]);
-// 			System.out.println("t:" + t[i]);
  		}
 		app.setOptions(optionList);
 		
 		AppraisalDao dao = new AppraisalDao();
 		HttpSession session = request.getSession();
 		if(dao.addAppraisal(app)){
-//			return mapping.findForward("success");
-			session.setAttribute("url", "viewApps.jsp");
-			return mapping.findForward("go");
+//			session.setAttribute("url", "viewApps.jsp");
+//			return mapping.findForward("go");
+			getApps(mapping,form,request,response);
+			return null;
 		}
 		else{
 			session.setAttribute("url", "appraisal.jsp");
@@ -161,8 +142,7 @@ public class AppraisalAction extends DispatchAction {
 		HttpSession session = request.getSession();
 		if(!apps.isEmpty())
 			session.setAttribute("apps", apps);
-//		return mapping.findForward("success");
-		session.setAttribute("url", "viewApps.jsp");
+		session.setAttribute("url", "appraisals.jsp");
 		return mapping.findForward("go");
 	}
 	
@@ -175,20 +155,17 @@ public class AppraisalAction extends DispatchAction {
 		
 		String user = ((MuserBean)session.getAttribute("currUser")).getName();
 		boolean isyiping = dao.is_readly_ping(user, id);
-		session.setAttribute("isyiping", isyiping);
-		
-		
+		session.setAttribute("yiping", isyiping);
+//		String username=((MuserBean)session.getAttribute("currUser")).getName();
 		AppraisalBean currApp = dao.getCurrApp(id);
 		
-		VoteDao voteDao = new VoteDao();
-		Hashtable<String,String> affixs = new Hashtable<String,String>();
-		for(int i =0;i<currApp.getBeipings().length;i++)
-			affixs = voteDao.getPath(id,currApp.getBeipings()[i],"app",affixs);
+		List<MuserBean> beipings = dao.getBeipings(currApp.getBeipings());
+		session.setAttribute("beipings",beipings);
 		session.setAttribute("preAnswerLent", currApp.getOptions().size()*currApp.getBeipings().length);
-		session.setAttribute("affixs",affixs);
+		session.setAttribute("files",currApp.getFiles());
 		session.setAttribute("currApp", currApp);
-//		return mapping.findForward("do_app");
-		session.setAttribute("url", "do_appraisal.jsp");
+		session.setAttribute("url", "appBeipingren.jsp");
+//		session.setAttribute("yiping", currApp.isIsreadyping());
 		return mapping.findForward("go");
 	}
 	
@@ -196,7 +173,21 @@ public class AppraisalAction extends DispatchAction {
 			HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		String beiping = StringUtil.toGB2312(request.getParameter("beipingren"));
+		
+		System.out.println("beipingren:"+beiping);
 		AppraisalBean app = (AppraisalBean)session.getAttribute("currApp");
+		String[] bps = app.getBeipings();
+		
+		String[] newbeiping = new String[app.getBeipings().length-1];
+		int index=0;
+		for(int j = 0;j<bps.length;j++){
+			if(! (bps[j].equals(beiping)) ){
+				newbeiping[index] = bps[j];
+				index++;
+			}
+			app.setBeipings(newbeiping);
+		}
+		
 		List<AppraisalOptionBean> options = app.getOptions();
 		List<AppAnswerBean> answerList = (List<AppAnswerBean> ) session.getAttribute("answerList");
 		if(answerList==null){
@@ -216,9 +207,14 @@ public class AppraisalAction extends DispatchAction {
 			answerList.add(answer);
 		}
 		session.setAttribute("answerListSize", answerList.size());
-//		return mapping.findForward("do_app");
-		session.setAttribute("url", "do_appraisal.jsp");
-		return mapping.findForward("go");
+		int preAnswerLent = (Integer)session.getAttribute("preAnswerLent");
+		if(answerList.size() == preAnswerLent){
+			session.setAttribute("url", "commitAnswer.jsp");
+			return mapping.findForward("go");
+		} else {
+			session.setAttribute("url", "do_appraisal.jsp");
+			return mapping.findForward("go");
+		}
 	}
 	
 	public ActionForward commit_appAnswer(ActionMapping mapping, ActionForm form,
@@ -227,21 +223,22 @@ public class AppraisalAction extends DispatchAction {
 		HttpSession session = request.getSession();
 		List<AppAnswerBean> answerList = (List<AppAnswerBean> ) session.getAttribute("answerList");
 		String user = ((MuserBean)session.getAttribute("currUser")).getName();
-		dao.do_answers(answerList,user);
+		int appid = ((AppraisalBean)session.getAttribute("currApp")).getId();
+		dao.do_answers(answerList,user,appid);
 		request.setAttribute("haveallanswer", "1"); 
-//		return mapping.findForward("do_app");
-		session.setAttribute("url", "do_appraisal.jsp");
+		session.setAttribute("yiping", "true");
+		session.setAttribute("url", "appBeipingren.jsp");
 		return mapping.findForward("go");
 	}
 	
 	public ActionForward subShowChart(ActionMapping mapping, ActionForm form,
 		HttpServletRequest request, HttpServletResponse response) {
 		
-//		int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
-//		AppraisalDao dao = new AppraisalDao();
-//		CategoryDataset dataset = dao.summary(appid);
+		int appid = ((AppraisalBean)request.getSession().getAttribute("currApp")).getId();
+		AppraisalDao dao = new AppraisalDao();
+		CategoryDataset dataset = dao.summary(appid);
 		
-		CategoryDataset dataset=getCategoryDataSet();//获得数据集
+//		CategoryDataset dataset=getCategoryDataSet();//获得数据集
 		
 		JFreeChart chart = ChartFactory.createBarChart3D(
 		"考评详细得分情况", // 图表标题
@@ -284,13 +281,13 @@ public class AppraisalAction extends DispatchAction {
 		chart.getCategoryPlot();
 		String filename = null;
 		try {
-			filename = ServletUtilities.saveChartAsJPEG(chart, 600, 600, request.getSession());
+			filename = ServletUtilities.saveChartAsJPEG(chart, 600, 450, request.getSession());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		HttpSession session = request.getSession();
-		session.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
-//		return mapping.findForward("do_app");
+		session.setAttribute("chartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+		session.setAttribute("filename", filename);
 		session.setAttribute("url", "ShowChart.jsp");
 		return mapping.findForward("go");
 	}
@@ -347,9 +344,9 @@ public class AppraisalAction extends DispatchAction {
 				e.printStackTrace();
 			}
 			HttpSession session = request.getSession();
-			session.setAttribute("subChartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
-//			return mapping.findForward("do_app");
-			session.setAttribute("url", "do_appraisal.jsp");
+			session.setAttribute("chartUrl", request.getContextPath()+"/servlet/DisplayChart?filename="+filename);
+			session.setAttribute("filename", filename);
+			session.setAttribute("url", "ShowChart.jsp");
 			return mapping.findForward("go");
 		}
 	

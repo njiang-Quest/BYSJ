@@ -28,9 +28,10 @@ overflow:hidden;
 </head>
 <frameset id="body" rows="120,*,45" cols="*" frameborder="no" border="0" framespacing="0" >
   <frame src="top.jsp" name="topFrame" scrolling="No" noresize="noresize" id="topFrame" title="topFrame" />
-  <frameset rows="*" cols="191,*" framespacing="0" frameborder="0" border="0">
+  <frameset rows="*" cols="191,*,191" framespacing="0" frameborder="0" border="0">
     <frame src="menu.jsp" name='left' scrolling='no' noresize='noresize' />
-    <frame src="index.jsp" name='main' scrolling='yes' noresize='noresize' />
+    <frame src="instruction.jsp" name='main' scrolling='yes' noresize='noresize' />
+    <frame src="note.jsp" name='right' scrolling='no' noresize='noresize' />
   </frameset>
   <frame src="bottom.html" name="bottomFrame" scrolling="No" noresize="noresize" id="bottomFrame" title="bottomFrame" />
 </frameset>

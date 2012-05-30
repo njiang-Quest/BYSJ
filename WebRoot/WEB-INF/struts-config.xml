@@ -20,7 +20,7 @@
       path="/loginAction"
       scope="request"
       type="com.bysj.struts.action.LoginAction">
-      <forward name="success" path="/index.jsp" />
+      <forward name="success" path="/welcome.jsp" />
       <forward name="fail" path="/Login.jsp" />
     </action>
     <action
@@ -33,6 +33,8 @@
       type="com.bysj.struts.action.VoteAction">
       <forward name="success" path="/index.jsp" />
       <forward name="fail" path="/AddVote.jsp" />
+       <forward name="go" path="/go.jsp"></forward>
+       <forward name="welcome" path="/welcome.jsp"/>
       <forward name="add_vote_affix" path="/uploadSuccess.jsp"></forward>
     </action>
     <action
@@ -49,7 +51,12 @@
       <forward name="show" path="/ShowChart.jsp"></forward>
       <forward name="go" path="/go.jsp"></forward>
     </action>
-    
+     <action
+      path="/exportChart"
+      parameter="action"
+      scope="request"
+      type="com.bysj.struts.action.ExportChart">
+    </action>
   </action-mappings>
 
   <message-resources parameter="com.bysj.struts.ApplicationResources" />

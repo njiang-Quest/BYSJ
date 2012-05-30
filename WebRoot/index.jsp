@@ -91,7 +91,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	</logic:notEmpty>
 		  	</div>
 	  	</form>
-	  	<a href="test.jsp">ͼ</a>
+	  	<a href="exportChart.do">ͼ</a>
 	  
   </body>
 </html>

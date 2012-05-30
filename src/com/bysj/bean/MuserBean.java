@@ -5,7 +5,7 @@ public class MuserBean {
 	private int id = 0;
 	private String name;
 	private String pwd;
-	private int deptid;
+	private String dept;
 	private int user_role_id;
 	private String obligtion;
 	private String gerder;
@@ -35,12 +35,6 @@ public class MuserBean {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
-	public int getDeptid() {
-		return deptid;
-	}
-	public void setDeptid(int deptid) {
-		this.deptid = deptid;
-	}
 	public int getUser_role_id() {
 		return user_role_id;
 	}
@@ -58,6 +52,12 @@ public class MuserBean {
 	}
 	public void setGerder(String gerder) {
 		this.gerder = gerder;
+	}
+	public String getDept() {
+		return dept;
+	}
+	public void setDept(String dept) {
+		this.dept = dept;
 	}
 
 }

@@ -24,7 +24,7 @@ public interface AppraisalSQLStatement {
 	String DO_ANSWER = "INSERT INTO APP_ANSWER VALUES(APP_ANSWER_ID.nextval, ?,?,?,?)";
 
 	//people take part in canpingren
-	String CANPING = "INSERT INTO APP_YIPING VALYES(APP_YIPING_ID.nextval,?,SYSDATE";
+	String CANPING = "INSERT INTO APP_YIPING values(APP_YIPING_ID.nextval,?,sysdate,?)";
 
 	//have already ping
 	String ALREADYPING = "SELECT * FROM APP_YIPING WHERE APPID=? AND CANPINGREN=?";
@@ -34,4 +34,7 @@ public interface AppraisalSQLStatement {
 	
 	//aSummart
 	String ASUMMARY = "select  kaopingren,sum(escore) from app_answer where appid=? group by kaopingren order by kaopingren";
+	
+	//get files
+	String FILES = "select pathname, aoption from vote_affix where voteid=? and affixtype=?";
 }

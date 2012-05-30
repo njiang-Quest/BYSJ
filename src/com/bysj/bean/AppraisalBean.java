@@ -19,6 +19,8 @@ public class AppraisalBean {
 	private String[] beipings;
 	private String[] canpings;
 	private String statusStr;
+	private List<File> files;
+//	private boolean isreadyping;
 	
 	private List<AppraisalOptionBean> options;
 
@@ -149,4 +151,20 @@ public class AppraisalBean {
 	public void setStatusStr(String statusStr) {
 		this.statusStr = statusStr;
 	}
+
+	public List<File> getFiles() {
+		return files;
+	}
+
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
+
+//	public boolean isIsreadyping() {
+//		return isreadyping;
+//	}
+//
+//	public void setIsreadyping(boolean isreadyping) {
+//		this.isreadyping = isreadyping;
+//	}
 }

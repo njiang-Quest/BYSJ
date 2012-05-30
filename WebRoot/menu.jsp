@@ -84,26 +84,28 @@ overflow:auto;
 </script>
 </head>
 <body><div id=content><div id="menu2"><table width="100%" height="174" border="0" cellpadding="0" cellspacing="0">
+  
   <tr>
     <td width="41%" height="52">&nbsp;</td>
-    <td width="59%" valign="bottom"><span class="STYLE1" onclick="signout()">退出登录</span></td>
-  </tr>
-  <tr>
-    <td height="27">&nbsp;</td>
-    <td valign="bottom"><span class="STYLE1"><a href='AddVote.jsp' target="main">设置投票</a></span></td>
+    <td width="59%" valign="bottom"><span class="STYLE1"><a href='AddVote.jsp' target="main">设置投票</a></span></td>
   </tr>
    <tr>
     <td height="27">&nbsp;</td>
-    <td valign="bottom"><span class="STYLE1">查看投票</span></td>
+    <td valign="bottom"><span class="STYLE1"><a href="vote.do?action=getVotes">查看投票</a></span></td>
   </tr>
   
   <tr>
     <td height="29">&nbsp;</td>
-    <td valign="bottom"><span class="STYLE1"><a href="appraisal.jsp" target="main">设置考评</a></span></td>
+    <td valign="bottom"><span class="STYLE1"><a href="addAppraisal.jsp" target="main">设置考评</a></span></td>
   </tr>
   <tr>
     <td height="29">&nbsp;</td>
-    <td valign="bottom"><span class="STYLE1"><a href="appraisal.do?action=subShowChart">查看考评</a></span></td>
+    <td valign="bottom"><span class="STYLE1"><a href="appraisal.do?action=getApps">查看考评</a></span></td>
+  </tr>
+  
+  <tr>
+    <td height="27">&nbsp;</td>
+    <td valign="bottom"><span class="STYLE1" onclick="signout()">退出登录</span></td>
   </tr>
 </table>
 </div>

@@ -64,94 +64,31 @@ public class ConnectionUtil {
 	 */
 	public static void freeConnection(Connection conn,Statement state,ResultSet rs){
 		
-//		if(rs != null ){
-//			try {
-//				rs.close();			
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}finally{
-//				if(state != null)
-//					try {
-//						state.close();
-//					} catch (SQLException e) {
-//						e.printStackTrace();
-//					}
-//				try {
-//					if(conn != null && !conn.isClosed())
-//						try {
-//							conn.close();
-//						} catch (SQLException e) {
-//							e.printStackTrace();
-//						}
-//				} catch (SQLException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-		
-		if(rs != null){
+		if(rs != null ){
 			try {
-				rs.close();
-//				System.out.println("close ResultSet");
+				rs.close();			
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally {
-				if(state != null){
+			}finally{
+				if(state != null)
 					try {
 						state.close();
-//						System.out.println("close state");
 					} catch (SQLException e) {
 						e.printStackTrace();
-					}finally{
-						if(conn!=null){
-							try {
-								conn.close();
-//								System.out.println("close connection");
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-						}
 					}
-				}else{
-					if(conn!=null){
+				try {
+					if(conn != null && !conn.isClosed())
 						try {
 							conn.close();
-//							System.out.println("close connection");
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
-					}
-				}
-			}
-		}else {
-			if(state != null){
-				try {
-					state.close();
-//					System.out.println("close state");
 				} catch (SQLException e) {
 					e.printStackTrace();
-				}finally{
-					if(conn!=null){
-						try {
-							conn.close();
-//							System.out.println("close connection");
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}else{
-				if(conn!=null){
-					try {
-						conn.close();
-//						System.out.println("close connection");
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
 				}
 			}
 		}
-		
+
 	}
 	
 	public static void main(String[] args){
@@ -159,7 +96,3 @@ public class ConnectionUtil {
 		String i ="";
 	}
 }
-
-//select * from user 效率最低
-//select id,name,pwd from user 效率居中
-//SELECT id,name,pwd FROM user 效率最高

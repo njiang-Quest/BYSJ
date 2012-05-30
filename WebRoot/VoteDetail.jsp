@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="gb2312"%>
 <%@page import="com.bysj.bean.VoteBean;"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
@@ -23,8 +23,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 	<link rel="shortcut icon" href="image/gif-0146.gif" type="image/x-icon"/>  
-	<script>		
-		function v() {			
+	<script>	
+		var xmlhttpresponse = false;
+		//创建XMLHttpRequest对象
+		function createxmlhttpresponse(){
+			if(window.XMLHttpRequest){
+				//非ie浏览器
+				xmlhttpresponse = new XMLHttpRequest();
+			}else if(window.ActiveXObject){
+				//ie浏览器
+				try{
+					xmlhttpresponse = new window.ActiveXObject("Msxml2.XMLHTTP");
+				}catch(e){
+					xmlhttpresponse = new window.ActiveXObject("Microsoft.XMLHTTP");
+				}
+			}
+		}
+
+		//响应函数
+		function processRequest(){
+			if(xmlhttpresponse.readyState==4){			
+				if(xmlhttpresponse.status==200){
+					var returnStr = xmlhttpresponse.responseText;
+					//alert(returnStr);
+					window.location.reload();
+				}else{
+					alert("请求有异常..");
+				}
+			}
+		
+		}
+		
+		function v(){
 			var options = document.getElementsByName("vote_option");
 			var option="";
 			var j= 0;			
@@ -41,12 +71,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    	alert('please select one before you can vote..' );
 		    } else {
 		    	option = option.substring(0,option.lastIndexOf(","));
-		    	//alert(option);
-		    	document.vote.action="vote.do?action=do_vote&option="+option+"&voteId="+document.getElementById("voteId").value;
-		    	//alert(document.vote.action);
-		    	document.vote.submit();
+		    	var url = "vote.do?action=do_vote&option="+option+"&voteId="+document.getElementById("voteId").value;
+		    	//alert(url);
+		    	createxmlhttpresponse();
+				xmlhttpresponse.open("POST",url,true);
+				xmlhttpresponse.onreadystatechange=processRequest;
+				xmlhttpresponse.send(null);
+		    	//document.vote.action="vote.do?action=do_vote&option="+option+"&voteId="+document.getElementById("voteId").value;
+		    	//document.vote.submit();
 		    }
 		}
+			
 		
 		function upload() {
 			<% 
@@ -82,22 +117,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body >
-	  	<table width=100% background='image/lightblue.jpg'>
-	  		  <tr><td align = right> Welcome ${currUser.name }(${currUser.id})&nbsp;&nbsp;<a href='Login.jsp'>sign out</a>&nbsp;&nbsp;</td></tr>
-	  	</table>
-	  	<p/>&nbsp;
-	  	<p/>&nbsp;
+	 
 
     <form name='vote' action='vote.do?action=do_vote' method='post' > 
+    <table background='image/xinzhibg1.jpg' width=850 height=506 align=center>
     	<input type=hidden value=${currVote.voteId } id='voteId'> 
+    	<tr><td>
     	<table align=center>
-    		<tr ><td colspan=3 align=center  width='600'><font size=5 face='妤蜂綋_GB2312'>${currVote.title }</font></td></tr>
+    		<tr ><td colspan=3 align=center  width='600'><font size=5 face='楷体_GB2312'>${currVote.title }</font></td></tr>
     		<tr><td colspan=3><hr/></td></tr>
     		<tr><td colspan=3>&nbsp;&nbsp;&nbsp;&nbsp;${currVote.context }</td></tr>
     		<tr><td colspan=2>&nbsp;</td></tr>
     	 
-    		<div>
-    		
     		<logic:iterate id="option" name="optionList" indexId="id">
     			<tr>
     				
@@ -121,7 +152,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				<td><img src="image/blue.jpg" width="${3+currVote.voteDetail[id].cont*10}" height=14>${currVote.voteDetail[id].percentage}%
     					<logic:iterate id="affix" name="affixs" indexId="id">
 		 				<c:if test="${affix.value != 'none' && affix.key==option}">
-		 					<a href="do_download.jsp?affix=${affix.value }"><img src="image/gif-0160.gif" width=15 height=15> </a>
+		 					<a href="do_download.jsp?filename=${affix.value }"><img src="image/gif-0160.gif" width=15 height=15> </a>
 		 				</c:if>
     					</logic:iterate>
     				</td>
@@ -130,25 +161,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			</tr>
     		</logic:iterate>
     		
-    		
-    		</div>
     		<tr><td colspan=3>&nbsp;</td></tr>
     		<tr><td colspan=3>
-    			<c:if test="${currVote.status == 1 && !currUser.already_vote}">
-    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='鎶曠エ' onclick=v() />
+    			<c:if test="${currVote.status == 1 && currUser.already_vote=='false'}">
+    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' onclick="v()" />
     			</c:if>
     			
     			<c:if test="${currVote.status == 0}">
-    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='鎶曠エ' disabled/><font color=gray size=2>(The voting is over)</font>
+    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' disabled/>
+    				<font color=gray size=2>(The voting is over)</font>
     			</c:if>
+    	
     			
     			<c:if test="${currVote.status == 1 && currUser.already_vote}">
-    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='鎶曠エ' disabled/><font color=gray size=2>(You have already vote)</font>
+    				&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value='投票' disabled/>
+    				<font color=gray size=2>(You have already vote)</font>
     			</c:if>
+    			 
     		</td></tr>
     	</table>  	
+    	</td></tr></table>
     </form>
-    
-
   </body>
 </html>

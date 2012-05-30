@@ -24,10 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="shortcut icon" href="image/gif-0146.gif" type="image/x-icon"/>  
 
 	<style type="text/css">
-		body{
-			margin-right:200px;
-			margin-left:200px;
-		}
+
 		
 		.sss{
 			 margin-left:200px; 
@@ -80,58 +77,52 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 		}
 		
-		/*
-		function save_appAnswer() {
-			document.app.action = 'appraisal.do?action=save_appAnswer';
-			document.app.submit();
-		}
-		*/
 		
-		function answer(kaoping) {
-			document.getElementById("cuser").value='' +kaoping;
-			document.getElementById("answer").style.display="block";
+		var xmlhttpresponse = false;
+		//创建XMLHttpRequest对象
+		function createxmlhttpresponse(){
+			if(window.XMLHttpRequest){
+				//非ie浏览器
+				xmlhttpresponse = new XMLHttpRequest();
+			}else if(window.ActiveXObject){
+				//ie浏览器
+				try{
+					xmlhttpresponse = new window.ActiveXObject("Msxml2.XMLHTTP");
+				}catch(e){
+					xmlhttpresponse = new window.ActiveXObject("Microsoft.XMLHTTP");
+				}
+			}
+		}
+
+		//响应函数
+		function processRequest(){
+			if(xmlhttpresponse.readyState==4){			
+				if(xmlhttpresponse.status==200){
+					var returnStr = xmlhttpresponse.responseText;
+					//alert(returnStr);
+					window.location.reload();
+				}else{
+					alert("请求有异常..");
+				}
+			}
+		
 		}
 		
+		function v(){
+				
+		    	createxmlhttpresponse();
+				xmlhttpresponse.open("POST",url,true);
+				xmlhttpresponse.onreadystatechange=processRequest;
+				xmlhttpresponse.send(null);
+		    }
+		}
 	</script>
   </head>
   
   <body >
-  
-	  	<table width=100% background='image/lightblue.jpg'>
-	  		  <tr><td align = right> Welcome ${currUser.name }(${currUser.id})&nbsp;&nbsp;<a href='Login.jsp'>sign out</a>&nbsp;&nbsp;</td></tr>
-	  	</table>
-	  	<p/>&nbsp;
-	  	
-	  <table  border="2" align=center width=860><tr><td class='sss'>	
-	    <form name='app' action='appraisal.do?action=commit_appAnswer' method='post' onsubmit="return mycheck()"> 
-	  	<table align=left>
-	  		<tr><td>参与考评人:</td></tr>
-	  		<c:forEach var='kaoping' items="${currApp.beipings}">
-		  		<tr>
-		  			
-						<td><c:if test="${kaoping==currUser.name && currApp.allowAffix=='1'}">
-    						<img src="image/gif-0146.gif" width=15 onclick="upload()">
-    					</c:if>
-    					<c:if test="${kaoping!=currUser.name}">
-    						&nbsp;&nbsp;
-    					</c:if>
-		  				<a href = "javascript:answer(${kaoping })">${kaoping }</a>
-		  				<logic:iterate id="affix" name="affixs" indexId="id">
-		 				<c:if test="${affix.value != 'none' && affix.key==kaoping}">
-		 					<a href="do_download.jsp?affix=${affix.value }"><img src="image/gif-0160.gif" width=15 height=15> </a>
-		 				</c:if>
-    					</logic:iterate>
-		  				</td>
-		  		</tr>
-		  	</c:forEach>
-		  	<c:if test="${preAnswerLent == answerListSize}">
-		  		<tr><td><input type=submit value="提交"></td></tr>
-		  	</c:if>
-		  	<tr><td><hr/></td></tr>
-		</table>
-    	</form>
      <form name='app' action='appraisal.do?action=save_appAnswer' method='post' onsubmit="return mycheck()"> 
-    	 <div id='answer' style="display:none">
+    	<table background='image/xinzhibg1.jpg' width=850 height=506 align=center>
+    	<tr><td>
     	<input type=hidden value=${currApp.id } id='appId'> 
     	<table align=center border=0>
     		<tr ><td colspan=2 align=center  width='600'><font size=5 face='楷体_GB2312'>考&nbsp;&nbsp;评&nbsp;&nbsp;表</font></td></tr>
@@ -144,8 +135,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		</tr>
     		
     		<tr>
-    			<td colspan=2>考评人:<input type=text id='cuser' name="beipingren" >
-				<!-- 	
+    			<td colspan=2>被考评人:
+					
 				<select  name="beipingren">
 					<c:forEach var='kaoping' items="${currApp.beipings}">
 						<option value = ${kaoping }>
@@ -153,7 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  				</option>
 		  			</c:forEach>
 					</select>
-				-->
+				
 				</td>	
     		</tr>
     		
@@ -171,27 +162,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		</c:forEach>
     		
     		<tr><td>&nbsp;&nbsp;</td></tr>
-    	    <tr><td><input type=button value="清空">&nbsp;&nbsp;<input type=submit value="保存" >&nbsp;&nbsp; </td></tr>
+    	    <tr><td>
+	    	    <input type=submit value="保存" >&nbsp;&nbsp;
+		    </td></tr>
    		</table>
-   		</div>
+   		</td></tr></table>
    		</form>
-   		
-   		<TABLE>
-   		<tr>
-   			<td><a href="appraisal.do?action=subShowChart">详细得分图</a><br/>
-   				<a href="appraisal.do?action=showChart">总分情况</a>
-   			</td>
-   			<td>
-   			<c:if test="${subChartUrl!=null}">
-   				<img src="${subChartUrl }">
-   			</c:if>
-   			<c:if test="${chartUrl!=null}">
-   		   	    <img src="${chartUrl }">
-   		   	</c:if>
-   		    </td>
-   	   </tr>
-       </TABLE>
-   	</td></tr></table>
    	
   </body>
 </html>

@@ -23,8 +23,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    <% 
-   // request.setCharacterEncoding("utf-8");
-    out.println("文件上传成功:"+ session.getAttribute("file")+"点击查看");%>
+  <table background='image/xinzhibg1.jpg' width=850 height=508 >
+  		<tr><td><table align=center>
+  			<tr><td>文件&nbsp; <font face="黑体">${file }</font> &nbsp; 上传成功 
+  				<a href="uploadFile.jsp" target="main">继续上传</a>
+  			</td></tr>
+  		</table></td></tr>
+   </table>
   </body>
 </html>

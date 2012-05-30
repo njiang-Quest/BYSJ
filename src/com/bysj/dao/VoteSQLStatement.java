@@ -61,5 +61,6 @@ public interface VoteSQLStatement {
 	//get one user 's path
 	String GETALLPATH = "SELECT PATHNAME, aoption FROM VOTE_AFFIX WHERE VOTEID=? and aoption=? and affixtype=?";
 	
+	//get messages
 	
 }

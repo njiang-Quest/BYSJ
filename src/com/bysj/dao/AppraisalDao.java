@@ -14,6 +14,8 @@ import com.bysj.bean.AppAnswerBean;
 import com.bysj.bean.AppYiPingBean;
 import com.bysj.bean.AppraisalBean;
 import com.bysj.bean.AppraisalOptionBean;
+import com.bysj.bean.File;
+import com.bysj.bean.MuserBean;
 import com.bysj.common.ConnectionUtil;
 
 public class AppraisalDao {
@@ -159,8 +161,11 @@ public class AppraisalDao {
 			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
 		
-		if(app!=null)
+		if(app!=null){
 			app.setOptions(getOptions(id));
+			app.setFiles(getFiles(id, "app"));
+//			app.setIsreadyping(is_readly_ping(id));
+		}
 		return app;
 	}
 	
@@ -189,6 +194,37 @@ public class AppraisalDao {
 		return list;
 	}
 	
+	/*
+	 *如果是人员考评就,获取被评人的信息
+	 */
+	public List<MuserBean> getBeipings (String[] bp){
+		
+		List<MuserBean> users = new ArrayList<MuserBean>();
+		conn = ConnectionUtil.getConnection();
+		String sql = "select * from muser where name=?";
+		for(int i=0; i<bp.length; i++){
+			try {
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, bp[i]);
+				rs = ps.executeQuery();
+				if(rs.next()){
+					MuserBean u= new MuserBean();
+					u.setName(bp[i]);
+					u.setDept(rs.getString(4));
+					u.setObligtion(rs.getString(6));
+					u.setGerder(rs.getString(7));
+					users.add(u);
+				}
+				ps.close();
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return users;
+	}
+	
 	public int do_answer(AppAnswerBean an) {
 		conn = ConnectionUtil.getConnection();
 		int count = 0;
@@ -208,7 +244,7 @@ public class AppraisalDao {
 		return count;
 	}
 	
-	public int do_answers(List<AppAnswerBean> answerList,String canping) {
+	public int do_answers(List<AppAnswerBean> answerList,String canping,int appid) {
 		int count = 1;
 		conn = ConnectionUtil.getConnection();
 		try {
@@ -228,15 +264,16 @@ public class AppraisalDao {
 		} finally {
 			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
-		canping(canping);
+		canping(canping,appid);
 		return count;
 	}
 	
-	private int canping(String canping){
+	private int canping(String canping,int appid){
 		conn = ConnectionUtil.getConnection();
 		try {
 			ps = conn.prepareStatement(AppraisalSQLStatement.CANPING);
 			ps.setString(1, canping);
+			ps.setInt(2, appid);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -259,6 +296,8 @@ public class AppraisalDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
 		return falg;
 		
@@ -273,15 +312,11 @@ public class AppraisalDao {
 			rs = ps.executeQuery();
 			while(rs.next()){
 				dataset.addValue(rs.getInt(3), rs.getString(1), rs.getString(2));
-//				dataset.addValue(100, "北京", "苹果");
-//				dataset.addValue(100, "上海", "苹果");
-//				dataset.addValue(100, "广州", "苹果");
-//				dataset.addValue(200, "北京", "梨子");
-//				dataset.addValue(200, "上海", "梨子");
-//				dataset.addValue(200, "广州", "梨子");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
 		
 		return dataset;
@@ -298,8 +333,37 @@ public class AppraisalDao {
 				dataset.addValue(rs.getInt(2), "", rs.getString(1));
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
 		}
 		
 		return dataset;
+	}
+	
+	public List<File> getFiles(int id,String type) {
+		List<File> files = new ArrayList<File>();
+		conn = ConnectionUtil.getConnection();
+		try {
+			ps = conn.prepareStatement(AppraisalSQLStatement.FILES);
+			ps.setInt(1, id);
+			ps.setString(2, type);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				String filename = rs.getString(1);
+				String owner = rs.getString(2);
+				String[] filenames = filename.split(",");
+				for(int i=0;i<filenames.length;i++){
+					File file = new File();
+					file.setOwner(owner);
+					file.setFname(filenames[i]);
+					files.add(file);
+				}
+			} 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtil.freeConnection(conn, ps, rs);
+		}
+		return files;
 	}
 }

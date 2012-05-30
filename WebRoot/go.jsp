@@ -9,10 +9,8 @@
 <%
 	//out.print("ggggggggggg");
    String url=(String)session.getAttribute("url");//"FtpUserManager.html";
-  // out.write("<script>window.top.left.location.href=\\menu.jsp\\;"+"</script>");
-   //out.write("<script>window.top.main.location.href=\""+url+"\";</script>");
-   
-    out.write("<script>window.top.left.location.href=\"menu.jsp\";");
+  // out.write("<script>window.top.right.location.href=\"note.jsp\";");
+   out.write("<script>window.top.left.location.href=\"menu.jsp\";");
    out.write("window.top.main.location.href=\""+url+"\";</script>");
    
 %>

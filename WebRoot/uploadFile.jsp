@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				alert('Please choose a file before click the upload button..');
 				return false;
 			} else {
-				alert(affix)
+				//alert(affix)
 				if( !(affix=='doc' || affix =='docx' || affix=='txt' || affix=='pdf' || affix=='sql' || affix=='log') )
 				{
 					alert('This file type is not allow, please select another one..');
@@ -39,18 +39,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</script>
   </head>
   
-  <body topmargin=100>
-    <form name='upload' method='post' action='do_upload.jsp' onsubmit='return uploadf()' enctype='multipart/form-data'>
-    	<table align=center>
-    		
+  <body>
+  
+  <form name='upload' method='post' action='do_upload.jsp' onsubmit='return uploadf()' enctype='multipart/form-data'>
+    	<table background='image/xinzhibg1.jpg' width=850 height=506 align=center>
+    		<tr><td><table>
     		<tr>
-    			<td>上传文件<input type='file' name='myfile' size=50/></td>
+    			<td width=20%>&nbsp;</td>
+    			<td>上传文件:<input type='file' name='myfile' size=50/></td>
     		</tr>
-    		<tr><td><input type=submit value='上传'/></td></tr>
-    		<tr><td>&nbsp;</td></tr>
-    		<tr><td><font color=gray size=3>说明: 只允许上传doc, txt, pdf 等文档, 原则上要求上传的文档应该有助于拉票.. </td></tr>
-    		
+    		<tr>
+    			<td>&nbsp;</td>
+    			<td><font color=gray size=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;说明: 只允许上传doc, txt, pdf 等文档.. </td>
+    		</tr>
+    		<tr><td >&nbsp;</td></tr>
+    		<tr>
+    			<td>&nbsp;</td>
+    			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit value='上传'/></td>
+    		</tr>
+    		</table></td></tr>
     	</table>
     </form>
+    
+   
   </body>
 </html>

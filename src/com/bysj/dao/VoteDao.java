@@ -152,10 +152,11 @@ public class VoteDao {
 			rs = ps.executeQuery();
 			if(rs.next()){
 				String path = rs.getString(1);
-				if(path.contains(","))
-					affixs.put(rs.getString(2), path.substring(path.lastIndexOf(',')+1,path.length()));
-				else
-					affixs.put(rs.getString(2), path);
+				if(path!=null )
+					if(path.contains(","))
+						affixs.put(rs.getString(2), path.substring(path.lastIndexOf(',')+1,path.length()));
+					else
+						affixs.put(rs.getString(2), path);
 			}
 			else
 				affixs.put(option, "none");
@@ -185,9 +186,6 @@ public class VoteDao {
 				voteDetail.setCont(rs.getInt(3));
 				voteDetail.setOption(rs.getString(4));
 				double total_count = getTotal_user(voteId);
-				
-//				System.out.println("total_count:"+total_count);
-//				System.out.println("voteDetail.getCont():"+voteDetail.getCont());
 				
 				if(total_count > 0){
 					voteDetail.setPercentage((int) Math.round(( voteDetail.getCont()/total_count)*100 ));

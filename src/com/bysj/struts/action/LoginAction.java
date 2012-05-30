@@ -61,12 +61,8 @@ public class LoginAction extends Action {
 			if(newUser.getId()!=0){
 				HttpSession session = request.getSession();
 				session.setAttribute("currUser", newUser);
-				try {
-					response.sendRedirect("vote.do?action=getVotes");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return null;//mapping.findForward("success");
+				session.setAttribute("messages", loginDao.getMessages(username));
+				return mapping.findForward("success");
 			}else 	
 				return mapping.getInputForward();	
 		}

@@ -5,6 +5,7 @@
 package com.bysj.struts.action;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,16 +73,15 @@ public class VoteAction extends DispatchAction {
 		
 		vote.setOptional(Integer.parseInt(voteForm.getOptional()));
 		
-//		System.out.println("title:"+vote.getTitle());
-//		System.out.println("context:"+vote.getContext());
 		HttpSession session = request.getSession();
 
 		VoteDao voteDao = new VoteDao();
 		if(voteDao.addVote(vote)){
 			vote.setStatus(1);
 			session.setAttribute("currVote", vote);
-//			return mapping.findForward("success");
-			session.setAttribute("url", "viewVotes.jsp");
+//			session.setAttribute("url", "viewVotes.jsp");
+//			return mapping.findForward("go");
+			getVotes(mapping,form,request,response);
 			return mapping.findForward("go");
 		}
 		else {
@@ -105,27 +105,12 @@ public class VoteAction extends DispatchAction {
 			}
 			session.setAttribute("votes", votes);
 			
-			
-//			if(request.getAttribute("visit")!=null)
-				session.setAttribute("showDiv", "1");
-//			else 
-//				session.setAttribute("showDiv", "0");
-			
-//			try {
-//				response.sendRedirect("index.jsp");
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-				
-			session.setAttribute("url", "index.jsp");
+			session.setAttribute("showDiv", "1");
+
+			session.setAttribute("url", "votes.jsp");
 			return mapping.findForward("go");
 		} else {
-//			try {
-//				response.sendRedirect("index.jsp");
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-			session.setAttribute("url", "index.jsp");
+			session.setAttribute("url", "votes.jsp");
 			return mapping.findForward("go");
 		}
 	}
@@ -136,24 +121,66 @@ public class VoteAction extends DispatchAction {
 //		System.out.println("voteId:"+voteId);
 		
 		getCurrVote(mapping,voteId,request,response);
-		return null;
+		request.getSession().setAttribute("url", "VoteDetail.jsp");
+		return mapping.findForward("go");
 	}
 	
 	public ActionForward do_vote(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession();
 		int voteId = Integer.parseInt(request.getParameter("voteId"));
 		String option = StringUtil.toGB2312(request.getParameter("option"));
 		String[] options = option.split(",");
-//		session.setAttribute("options", option);//记录用户的选择,用于展示页面
 		VoteDao voteDao = new VoteDao();
 		int userid =( (MuserBean)session.getAttribute("currUser") ).getId();
-//		System.out.println("userid:"+userid);
+		System.out.println("option:"+option);
 		boolean ok = false;
 		for(String op:options)
 			ok = voteDao.do_vote(voteId, op,userid);
+		PrintWriter out = response.getWriter();
 		if(ok){
-			getCurrVote(mapping,voteId,request,response);
+			MuserBean user = (MuserBean)session.getAttribute("currUser") ;
+			user.setAlready_vote(voteDao.already_vote(voteId, userid));
+			
+			session.setAttribute("currUser", user);
+			VoteBean currVote = voteDao.getCurrVote(voteId);
+			if(currVote != null){
+				currVote.setOptionList( currVote.getOptions().split(",") );
+				
+				Hashtable<String,String> affixs = new Hashtable<String,String>();
+				List<VoteDetailBean> voteDetail_list = new ArrayList<VoteDetailBean>();
+				for(int i =0;i<currVote.getOptionList().length;i++){
+					VoteDetailBean voteDetail = null;
+					voteDetail = voteDao.getVoteDetail(voteId, currVote.getOptionList()[i]);
+					
+					if(voteDetail==null) 
+						voteDetail = new VoteDetailBean();
+					
+					voteDetail_list.add(voteDetail);
+					
+					affixs = voteDao.getPath(voteId,currVote.getOptionList()[i],"vote",affixs);
+
+				}
+				currVote.setVoteDetail(voteDetail_list);
+				currVote.setAffixFiles(affixs);
+//				System.out.println("keys"+affixs.keySet());
+//				System.out.println("keys"+affixs.values());
+
+//				if(currVote.getStatus()==0)
+//					currVote.setStrStatus("已结束");
+//				else
+//					currVote.setStrStatus("进行中");
+				session.setAttribute("currVote", currVote);
+				session.setAttribute("optionList", currVote.getOptionList());
+				session.setAttribute("affixs", currVote.getAffixFiles());
+//				session.setAttribute("url", "VoteDetail.jsp");
+//				return mapping.findForward("go");
+				out.println("seccess");
+			} else {
+//				session.setAttribute("url", "pageNotAvailable.jsp");
+//				return mapping.findForward("go");
+				out.print("fail..");
+			}
 		}	
 		return null;
 	}
@@ -165,8 +192,6 @@ public class VoteAction extends DispatchAction {
 		MuserBean user = (MuserBean)session.getAttribute("currUser") ;
 		int userid = user.getId();
 		user.setAlready_vote(voteDao.already_vote(voteId, userid));
-		
-//		System.out.println("already_vote:" + user.isAlready_vote());
 		
 		session.setAttribute("currUser", user);
 		VoteBean currVote = voteDao.getCurrVote(voteId);
@@ -183,25 +208,15 @@ public class VoteAction extends DispatchAction {
 					voteDetail = new VoteDetailBean();
 				
 				voteDetail_list.add(voteDetail);
-//				System.out.println("percentage:"+voteDetail.getPercentage());
 				
 				affixs = voteDao.getPath(voteId,currVote.getOptionList()[i],"vote",affixs);
 
 			}
 			currVote.setVoteDetail(voteDetail_list);
 			currVote.setAffixFiles(affixs);
-			System.out.println("keys"+affixs.keySet());
-			System.out.println("keys"+affixs.values());
-			
-//			Map<String,String> affixs = voteDao.getAllPath(voteId);
-//			Map<String,String> affixs = currVote.getAffixFiles();
-//			if(!affixs.isEmpty()){
-//				currVote.setAffixFiles(affixs);
-//				session.setAttribute("affixs", affixs);
-//				
-//				System.out.println("keys"+affixs.keySet());
-//				System.out.println("keys"+affixs.values());
-//			}
+//			System.out.println("keys"+affixs.keySet());
+//			System.out.println("keys"+affixs.values());
+
 			if(currVote.getStatus()==0)
 				currVote.setStrStatus("已结束");
 			else
@@ -209,19 +224,9 @@ public class VoteAction extends DispatchAction {
 			session.setAttribute("currVote", currVote);
 			session.setAttribute("optionList", currVote.getOptionList());
 			session.setAttribute("affixs", currVote.getAffixFiles());
-//			try {
-//				response.sendRedirect("VoteDetail.jsp");
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
 			session.setAttribute("url", "VoteDetail.jsp");
 			return mapping.findForward("go");
 		} else {
-//			try {
-//				response.sendRedirect("pageNotAvailable.jsp");
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
 			session.setAttribute("url", "pageNotAvailable.jsp");
 			return mapping.findForward("go");
 		}
